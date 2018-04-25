@@ -56,17 +56,17 @@ int solve(int N, string S) {
 
 int main() {
   int N; string S;
-  cin >> N;
-  cin >> S;
-  cout << solve(N, S) << endl;
+  cin>>N;
+  cin>>S;
+  cout<<solve(N,S)<<endl;
   return 0;
 }
 
 // 1. take list
 /*
  
- int N; scanf("%d", &N);
+ int N; scanf("%d",&N);
  vector<LL> A(N);
- REP(i,N) scanf("%lld", &A[i]);
+ REP(i,N) scanf("%lld",&A[i]);
  
  */
