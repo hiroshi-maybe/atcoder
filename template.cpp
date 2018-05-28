@@ -1,4 +1,5 @@
 #include <iostream>
+#include <iomanip>
 #include <algorithm>
 #include <vector>
 #include <string>
@@ -50,23 +51,19 @@ typedef tuple< int, int, int > III;
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
 // $ g++ -std=c++11 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
-int solve(int N, string S) {
+const int MAX_N=1e5+1;
+int N;
+LL A[MAX_N];
+LL solve() {
   return -1;
 }
 
 int main() {
-  int N; string S;
+  ios_base::sync_with_stdio(false);
+  cin.tie(0);
+
   cin>>N;
-  cin>>S;
-  cout<<solve(N,S)<<endl;
+  REP(i,N) cin>>A[i];
+  cout<<solve()<<endl;
   return 0;
 }
-
-// 1. take list
-/*
- 
- int N; scanf("%d",&N);
- vector<LL> A(N);
- REP(i,N) scanf("%lld",&A[i]);
- 
- */
