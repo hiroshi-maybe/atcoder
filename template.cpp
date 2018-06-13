@@ -54,8 +54,7 @@ typedef tuple< int, int, int > III;
 const int MAX_N=1e5+1;
 int N;
 LL A[MAX_N];
-LL solve() {
-  return -1;
+void solve() {
 }
 
 int main() {
@@ -64,6 +63,6 @@ int main() {
 
   cin>>N;
   REP(i,N) cin>>A[i];
-  cout<<solve()<<endl;
+  solve();
   return 0;
 }
