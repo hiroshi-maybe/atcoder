@@ -88,6 +88,7 @@ typedef tuple< int, int, int > III;
    - original article
   - http://d.hatena.ne.jp/simezi_tan/20130522/1369203086
    - proof
+  - http://naoyat.hatenablog.jp/entry/zeta-moebius
  
  @yosupo's solution: https://beta.atcoder.jp/contests/arc100/submissions/2776687
  
