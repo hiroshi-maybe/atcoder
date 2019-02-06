@@ -1,0 +1,19 @@
+{
+  "name": "AtCoder Sample Copy",
+  "description": "Batch copy of samples",
+  "version": "0.01",
+  "permissions": [
+  	"contextMenus",
+  	"tabs"
+  ],
+  "content_scripts": [
+   {
+     "matches": ["https://*.atcoder.jp/*"],
+     "js": ["contentScript.js"]
+   }
+ ],
+  "background": {
+    "scripts": ["menu.js"]
+  },
+  "manifest_version": 2
+}
