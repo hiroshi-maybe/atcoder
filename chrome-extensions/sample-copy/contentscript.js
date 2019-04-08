@@ -23,7 +23,7 @@ const parityMap = {
 };
 const prefix="pre-sample";
 chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
-	var es = document.querySelectorAll("div#task-statement div.part pre");	
+	var es = document.querySelectorAll("div#task-statement span.lang-ja div.part pre");	
 	var samples = Array.from(es)
 		.filter(x => x.id.substring(0,prefix.length)==prefix)
 		.map(x => ({
@@ -32,8 +32,8 @@ chrome.runtime.onMessage.addListener(function(message, sender, sendResponse) {
 		}));
 	var parity = parityMap[message];
 	var data = samples.filter(x => x.id%2==parity ).map(x => x.text);
-	const batchsample = message==="input"?formatInputSamples(data):formatOutputSamples(data);
-	console.log(batchsample);
+	//console.log(data);
+	const batchsample = message==="input"?formatInputSamples(data):formatOutputSamples(data);	
 	copyToClipboard(batchsample);
 //	alert(message+" successfully copied!\n"+data);
 });
