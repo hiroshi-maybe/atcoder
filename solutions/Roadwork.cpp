@@ -63,50 +63,76 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
  
  Coordinate compression along with queries is easier.
  
+ 11/29/2019
+ 
+ Replace lazy RMQ with lazy segment tree library.
+ 
  */
 
 const int MAX_N=1e6+1;
 LL S[MAX_N],T[MAX_N],X[MAX_N],D[MAX_N];
 int N,Q;
-
-template <class T> struct RMQ_lazy {
+template <typename Val, typename Delay>
+struct LazySegmentTree {
+  int N_/* adjusted N*/,head/* head of leaf */;
+  vector<Val> tree;
+  vector<Delay> delay;
+  Val id;
+  Delay delayId;
+  using Merge = function<Val(Val,Val)>;
+  using Apply = function<Val(Val,Delay)>;
+  using MergeDelay = function<Delay(Delay,Delay)>;
+  Merge merge;
+  Apply apply;
+  MergeDelay mergeDelay;
 public:
-  T Inf;
-  vector<T> A;
-  int SIZE; // normalized size of original array
-  RMQ_lazy(int N, T Inf) : Inf(Inf) {
-    this->SIZE=calcsize(N);
-    this->A=vector<T>(2*SIZE,Inf);
+  LazySegmentTree(int N, Val id, Delay delayId, Merge merge, Apply apply, MergeDelay mergeDelay) { prep(N,id,delayId,merge,apply,mergeDelay); }
+  LazySegmentTree(vector<Val> A, Val id, Delay delayId, Merge merge, Apply apply, MergeDelay mergeDelay) { prep(A.size(),id,delayId,merge,apply,mergeDelay),this->build(A); }
+  LazySegmentTree& prep(int N, Val id, Delay delayId, Merge merge, Apply apply, MergeDelay mergeDelay) {
+    this->id=id,this->delayId=delayId;
+    this->merge=merge,this->apply=apply,this->mergeDelay=mergeDelay;
+    int n=1; while(n<N) n<<=1; // Init by power of 2
+    this->tree=vector<Val>(2*n-1,id),this->delay=vector<Delay>(2*n-1,delayId);
+    this->N_=n,this->head=N_-1;
+    return *this;
   }
-  // O(N) initialization
-  RMQ_lazy(vector<T> &X, T Inf) : Inf(Inf) {
-    this->SIZE=calcsize(X.size());
-    this->A=vector<T>(2*SIZE,Inf);
-    for(int i=0; i<X.size(); ++i) A[i+SIZE-1]=X[i];
-    for(int i=SIZE-2; i>=0; --i) {
-      A[i]=min(A[2*i+1],A[2*i+2]);
-    }
+  void build(const vector<Val> &ns) {
+    for(int i=0; i<ns.size(); ++i) tree[i+N_-1]=ns[i];
+    for(int i=N_-2; i>=0; --i) mergeAt(i);
+  } // Initialize tree with `ns`
+  void update(int ql, int qr, const Delay &delay) { updateTree(ql,qr,delay,0,0,N_); }
+  Val query(int ql, int qr) { return queryTree(ql,qr,0,0,N_); } // query in range [ql,qr)
+private:
+  Val mergeAt(int i) { return tree[i]=merge(tree[2*i+1],tree[2*i+2]); }
+  Val queryTree(const int ql, const int qr, int i, int tl, int tr) {
+    if(tr<=ql||qr<=tl) return id; // out of range
+    applyDelay(i);
+    if(ql<=tl&&tr<=qr) return tree[i]; // all covered
+    int mid=tl+(tr-tl)/2; // partially covered
+    return merge(queryTree(ql,qr,2*i+1, tl,mid),
+                 queryTree(ql,qr,2*i+2,mid, tr));
   }
-  T query(int i) {
-    i+=SIZE-1;
-    T res=A[i];
-    while(i>0) i=(i-1)/2,res=min(res,A[i]);
-    return res;
+  void updateTree(const int ql, const int qr, Delay d, int i, int tl, int tr) {
+    if(ql<=tl&&tr<=qr) mergeDelayAt(i,d),applyDelay(i); // all covered
+    else if(ql<tr&&tl<qr) { // partially coverd
+      int mid=tl+(tr-tl)/2;
+      applyDelay(i),updateTree(ql,qr,d,2*i+1,tl,mid),updateTree(ql,qr,d,2*i+2,mid,tr),mergeAt(i);
+    } else applyDelay(i);
   }
-  // range update [ql,qr)
-  void update(int ql, int qr, T v, int i=0, int l=-1, int r=-1) {
-    if(l==-1) l=0,r=SIZE;
-//    if(l>=r) return;
-    if(qr<=l||r<=ql) return;
-    if(ql<=l&&r<=qr) { A[i]=min(A[i],v); return; }
-    int m=(l+r)/2;
-    update(ql,qr,v,2*i+1,l,m),update(ql,qr,v,2*i+2,m,r);
+  void applyDelay(int i) {
+    if(delay[i]==delayId) return;
+    if(i<head) pushdownAt(i);
+    tree[i]=apply(tree[i],delay[i]),delay[i]=delayId;
   }
-  int calcsize(int N) {
-    int n=1; while(n<N) n<<=1;
-    return n;
-  }
+  void pushdownAt(int i) { mergeDelayAt(2*i+1,delay[i]),mergeDelayAt(2*i+2,delay[i]); }
+  void mergeDelayAt(int i, Delay d) { delay[i]=mergeDelay(delay[i],d); }
 };
+template<typename Val, typename Delay> auto makeLazyRmQ(vector<Val> A, Val id, Delay delayId) {
+  auto mina = [](Val a, Val b) { return min(a,b); };
+  auto seta = [](Val , Delay b) { return b; };
+  auto setb = [](Delay _, Delay b) { return b; };
+  return LazySegmentTree<Val,Val>(A,id,delayId,mina,seta,setb);
+}
 
 const LL Inf=1e18;
 void solve() {
@@ -120,7 +146,8 @@ void solve() {
   xs.erase(unique(ALL(xs)),xs.end());
 //  dumpc(xs);
   int M=SZ(xs);
-  RMQ_lazy<LL> rmq(M,Inf);
+  auto mina=[](LL a, LL b) { return min(a,b); };
+  auto rmq=LazySegmentTree<LL,LL>(vector<LL>(M,Inf),Inf,Inf,mina,mina,mina);
   REP(i,N) {
     LL s=S[i],t=T[i],x=X[i];
     int l=lower_bound(ALL(xs),s-x)-xs.begin();
@@ -129,7 +156,7 @@ void solve() {
   }
   REP(i,Q) {
     int p=lower_bound(ALL(xs),D[i])-xs.begin();
-    LL res=rmq.query(p);
+    LL res=rmq.query(p,p+1);
 //    dump(i,D[i],p,res);
     if(res>=Inf) res=-1;
     cout<<res<<endl;
