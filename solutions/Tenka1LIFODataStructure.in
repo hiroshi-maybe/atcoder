@@ -1,0 +1,25 @@
+7 20
+Push 2 3
+Push 4 5
+Top
+Size
+Pop 5
+Top
+Size
+~
+1 10
+Push 40 40
+~
+5 10
+Push 1 2
+Top
+Pop 1
+Top
+Size
+~
+4 10
+Top
+Size
+Push 1 1
+Top
+~
