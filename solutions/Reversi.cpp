@@ -94,26 +94,27 @@ struct ModInt {
  https://img.atcoder.jp/agc031/editorial.pdf
  https://naoyat.hatenablog.jp/entry/AGC031
  
+ 4/25/2020
+ 
+ 17:00-17:20 solve again
+ 
  */
 
 const int MAX_N=1e6+1;
-int C[MAX_N];
+int A[MAX_N];
 int N;
 
 ModInt dp[MAX_N];
-int pre[MAX_N];
 void solve() {
-  MINUS(pre);
+  map<int,int> pos;
   dp[0]=1;
   REP(i,N) {
-    ModInt a=dp[i],b=0;
-    int j=pre[C[i]];
-    if(j!=-1&&j<i-1) b=dp[j+1];
-    
-    dp[i+1]=a+b;
-
-    dump(i,C[i],j,a,b,a+b);
-    pre[C[i]]=i;
+    dp[i+1]=dp[i];
+    if(pos.count(A[i])&&pos[A[i]]<i-1) {
+      int pre=pos[A[i]];
+      dp[i+1]+=dp[pre+1];
+    }
+    pos[A[i]]=i;
   }
   cout<<dp[N]<<endl;
 }
@@ -124,7 +125,7 @@ int main() {
   cout<<setprecision(12)<<fixed;
   
   cin>>N;
-  REP(i,N) cin>>C[i];
+  REP(i,N) cin>>A[i];
   solve();
   
   return 0;
