@@ -1,34 +1,17 @@
-#include <iostream>
-#include <iomanip>
-#include <algorithm>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <set>
-#include <map>
-#include <iostream>
-#include <utility>
-#include <cctype>
-#include <queue>
-#include <stack>
-#include <cstdio>
-#include <cstdlib>
-#include <cmath>
-#include <unordered_set>
-#include <unordered_map>
-#include <limits.h>
-#include <cstring>
-#include <tuple>
-#include <cassert>
-#include <numeric>
+#include <bits/stdc++.h>
 using namespace std;
 // type alias
 typedef long long LL;
-typedef vector < int > VI;
-typedef unordered_map < int, int > MAPII;
-typedef unordered_set < int > SETI;
-typedef pair< int , int > II;
-typedef tuple< int, int, int > III;
+typedef pair<int,int> II;
+typedef tuple<int,int,int> III;
+typedef vector<int> VI;
+typedef vector<string> VS;
+typedef unordered_map<int,int> MAPII;
+typedef unordered_set<int> SETI;
+template<class T> using VV=vector<vector<T>>;
+// minmax
+template<class T> inline T SMIN(T& a, const T b) { return a=(a>b)?b:a; }
+template<class T> inline T SMAX(T& a, const T b) { return a=(a<b)?b:a; }
 // repetition
 #define FORE(i,a,b) for(int i=(a);i<=(b);++i)
 #define REPE(i,n)  for(int i=0;i<=(n);++i)
@@ -36,19 +19,31 @@ typedef tuple< int, int, int > III;
 #define REP(i,n)  for(int i=0;i<(n);++i)
 #define FORR(x,arr) for(auto& x:arr)
 #define SZ(a) int((a).size())
+// collection
+#define ALL(c) (c).begin(),(c).end()
 // DP
 #define MINUS(dp) memset(dp, -1, sizeof(dp))
 #define ZERO(dp) memset(dp, 0, sizeof(dp))
-// minmax
-#define SMAX(a,b) a = max(a,b)
-#define SMIN(a,b) a = min(a,b)
+// stdout
+#define println(args...) fprintf(stdout, ##args),putchar('\n');
 // debug cerr
-#define TRACE true
-#define dump(x) if(TRACE) { cerr << #x << " = " << (x) << endl; }
-#define dump2(x,y) if(TRACE) { cerr << #x << " = " << (x) << ", " << #y << " = " << (y) << endl; }
-#define dump3(x,y,z) if(TRACE) { cerr << #x << " = " << (x) << ", " << #y << " = " << (y) << ", " << #z << " = " << (z) << endl; }
-#define dump4(x,y,z,a) if(TRACE) { cerr << #x << " = " << (x) << ", " << #y << " = " << (y) << ", " << #z << " = " << (z) << ", " << #a << " = " << (a) << endl; }
-#define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
+template<class Iter> void __kumaerrc(Iter begin, Iter end) { for(; begin!=end; ++begin) { cerr<<*begin<<','; } cerr<<endl; }
+void __kumaerr(istream_iterator<string> it) { (void)it; cerr<<endl; }
+template<typename T, typename... Args> void __kumaerr(istream_iterator<string> it, T a, Args... args) { cerr<<*it<<"="<<a<<", ",__kumaerr(++it, args...); }
+template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, const std::pair<S,T>& _p) { return _os<<"{"<<_p.first<<','<<_p.second<<"}"; }
+#define __KUMATRACE__ true
+#ifdef __KUMATRACE__
+#define dump(args...) { string _s = #args; replace(_s.begin(), _s.end(), ',', ' '); stringstream _ss(_s); istream_iterator<string> _it(_ss); __kumaerr(_it, args); }
+#define dumpc(ar) { cerr<<#ar<<": "; FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
+#define dumpC(beg,end) { cerr<<"~"<<#end<<": "; __kumaerrc(beg,end); }
+#else
+#define dump(args...)
+#define dumpc(ar)
+#define dumpC(beg,end)
+#endif
+
+// $ cp-batch MultipleTestcases | diff MultipleTestcases.out -
+// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address MultipleTestcases.cpp && ./a.out
 
 /*
  
@@ -65,24 +60,32 @@ typedef tuple< int, int, int > III;
   - It takes too much time in analysis
   - C is small. State can be reduced to few buckets
  
+ 4/26/2020
+ 
+ solve again
+ 
  */
 
-// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
-const int MAX_N=5e3+1;
+const int MAX_N=500+1;
+int A[MAX_N][MAX_N],D[31][31];
 int N,C;
-LL D[30][30];
-int A[MAX_N][MAX_N];
-int X[3][30];
+
 void solve() {
-  ZERO(X);
-  REP(i,N)REP(j,N) X[(i+j)%3][A[i][j]]++;
-  LL res=1e9;
-  REP(i,C)REP(j,C)if(i!=j)REP(k,C)if(j!=k&&i!=k){
-    LL x=0;
-    int C2[3]={i,j,k};
-    REP(g,3)REP(c,30) x+=1LL*X[g][c]*D[c][C2[g]];
-//    dump4(i,j,k,x);
-    SMIN(res,x);
+  VV<int> X(3);
+  REP(i,N)REP(j,N) {
+    X[(i+j)%3].push_back(--A[i][j]);
+  }
+  VV<int> cost(3,VI(C));
+  REP(c,C)REP(i,3) {
+    int sum=0;
+    FORR(x,X[i]) sum+=D[x][c];
+    cost[i][c]=sum;
+  }
+  
+  int res=1e9;
+  REP(c1,C)REP(c2,C)if(c1!=c2)REP(c3,C)if(c2!=c3&&c3!=c1) {
+    int sum=cost[0][c1]+cost[1][c2]+cost[2][c3];
+    SMIN(res,sum);
   }
   cout<<res<<endl;
 }
@@ -90,10 +93,12 @@ void solve() {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
+  cout<<setprecision(12)<<fixed;
   
   cin>>N>>C;
   REP(i,C)REP(j,C) cin>>D[i][j];
-  REP(i,N)REP(j,N) cin>>A[i][j],A[i][j]--;
+  REP(i,N)REP(j,N) cin>>A[i][j];
   solve();
+  
   return 0;
 }
