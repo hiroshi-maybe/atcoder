@@ -56,41 +56,30 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
  
  https://img.atcoder.jp/abc128/editorial.pdf
  
+ 4/25/2020
+ 
+ solve again
+ 
  */
 
-const int MAX_N=1e2+1;
-LL V[MAX_N];
+const int MAX_N=1e6+1;
+LL A[MAX_N];
 int N,K;
 
 void solve() {
-  LL res=0;
-  REPE(l,K)REPE(r,K) if(l+r<=N&&l+r<=K) {
-    vector<LL> X;
-    REP(i,l) X.push_back(V[i]);
-    REP(i,r) X.push_back(V[N-1-i]);
-    sort(ALL(X)),reverse(ALL(X));
-    int M=K-l-r;
-    int L=SZ(X);
-
-    /*
-    LL sum=0;
-    REP(i,L) {
-      sum+=X[i];
-      int rem=L-i-1;
-      if(rem>M) continue;
-      if((M-rem)%2==0) SMAX(res,sum);
-    }*/
-    LL ans=0;
-    int i=L-1;
-    while(i>=0&&X[i]<0&&M--) --i;
-    /*
-    if(M%2==1) {
-      if(i+1<L&&i>=0&&-X[i]>X[i+1]) ++i;
-      else --i;
-      i=max(i,-1);
-    }*/
-    ans=accumulate(X.begin(),X.begin()+i+1,0LL);
-    SMAX(res,ans);
+  const LL Inf=1e18;
+  LL res=-Inf;
+  REPE(x,N)REPE(y,N)if(x+y<=K&&x+y<=N) {
+    dump(x,y);
+    VI xs;
+    REP(i,x) xs.push_back(A[i]);
+    REP(j,y) xs.push_back(A[N-1-j]);
+    sort(ALL(xs)),reverse(ALL(xs));
+    int rem=K-x-y;
+    while(SZ(xs)&&rem--&&xs.back()<0) xs.pop_back();
+    LL sum=accumulate(ALL(xs),0LL);
+    dump(x,y,sum);
+    SMAX(res,sum);
   }
   cout<<res<<endl;
 }
@@ -101,7 +90,7 @@ int main() {
   cout<<setprecision(12)<<fixed;
   
   cin>>N>>K;
-  REP(i,N) cin>>V[i];
+  REP(i,N) cin>>A[i];
   solve();
   
   return 0;
