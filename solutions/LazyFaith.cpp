@@ -54,35 +54,15 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
  https://img.atcoder.jp/abc119/editorial.pdf
  http://drken1215.hatenablog.com/entry/2019/02/24/230900
  
+ 4/25/2020
+ 
+ solve again
+ 
  */
 
 const int MAX_N=1e6+1;
-LL P[2][MAX_N];
-int N[2];
-
-void solve(LL x) {
-  vector<LL> ps[2];
-  REP(c,2) {
-    int i=lower_bound(P[c],P[c]+N[c],x)-P[c];
-    ps[c].push_back(P[c][i]);
-    if(i>0) ps[c].push_back(P[c][i-1]);
-  }
-  LL res=1e17;
-  REP(o,2) {
-    REP(mask,4) {
-      LL cost=0;
-      LL p=x;
-      REP(i,2) {
-        int j=(mask>>i)&1;
-        LL pp=ps[i][min(j,SZ(ps[i])-1)];
-        cost+=abs(pp-p),p=pp;
-      }
-      SMIN(res,cost);
-    }
-    swap(ps[0],ps[1]);
-  }
-  cout<<res<<endl;
-}
+LL A[MAX_N],B[MAX_N];
+int N,M;
 
 int main() {
   ios_base::sync_with_stdio(false);
@@ -90,12 +70,29 @@ int main() {
   cout<<setprecision(12)<<fixed;
   
   int Q;
-  cin>>N[0]>>N[1]>>Q;
-  REP(c,2)REP(i,N[c]) cin>>P[c][i];
-  REP(c,2)P[c][N[c]++]=1e16;
-  REP(_,Q) {
+  cin>>N>>M>>Q;
+  const LL Inf=1e12;
+  A[0]=B[0]=-Inf;
+  REP(i,N) cin>>A[i+1];
+  REP(i,M) cin>>B[i+1];
+  A[N+1]=B[M+1]=Inf;
+
+  //sort(A,A+N),sort(B,B+M);
+  while(Q--) {
     LL x; cin>>x;
-    solve(x);
+    int i=lower_bound(A,A+N+2,x)-A,j=lower_bound(B,B+M+2,x)-B;
+    vector<LL> dx1={x-A[i-1],A[i]-x},dx2={x-B[j-1],B[j]-x};
+//    dumpc(dx1);
+//    dumpc(dx2);
+    vector<LL> ds={
+      max(dx1[0],dx2[0]),
+      max(dx1[1],dx2[1]),
+      dx1[0]*2+dx2[1],
+      dx2[0]*2+dx1[1],
+      dx1[1]*2+dx2[0],
+      dx2[1]*2+dx1[0]};
+    LL res=*min_element(ALL(ds));
+    cout<<res<<endl;
   }
   
   return 0;
