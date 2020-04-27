@@ -125,21 +125,25 @@ void solve() {
   cout<<res[0]+res[1]+res[2]+res[3]<<endl;
 }
 
-int dp[100]={};
 void solve_dp() {
-  for(int i=1; i<=N; ++i) {
-    vector<LL> ps=primeFactors(i);
-    FORR(p,ps) P[p]++;
+  map<int,int> cnt;
+  FORE(i,1,N) {
+    auto ps=primeFactors(i);
+    REP(i,SZ(ps)) cnt[(int)ps[i]]++;
   }
-  dp[1]=1;
-  for(int p=1; p<=100; ++p) if(P[p]>0) {
-//    dump2(p,P[p]);
-    for(int cnt=75; cnt>=1; --cnt) if(dp[cnt]) {
-      for(int f=1; f<=P[p]; ++f) if(cnt*(f+1)<=75) dp[cnt*(f+1)]+=dp[cnt];
+  VI A;
+  FORR(kvp,cnt) A.push_back(kvp.second);
+  VV<LL> dp(SZ(A)+1,vector<LL>(100,0LL));
+  dp[0][1]=1;
+  int M=SZ(A);
+  REP(i,M)REPE(j,75) {
+    REPE(k,A[i]) if(j*(k+1)<=75) {
+      dp[i+1][j*(k+1)]+=dp[i][j];
     }
   }
-  cout<<dp[75]<<endl;
+  cout<<dp[M][75]<<endl;
 }
+
 void test() {
   int X=16*81*25;
   int i=0;
