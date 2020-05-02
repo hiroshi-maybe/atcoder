@@ -131,7 +131,7 @@ void solve_org() {
   cout<<-1<<endl;
 }
 
-void solve() {
+void solve_v2() {
   map<char,int> F={{'o',1},{'0',0}};
   const char A[2]={wo,sh};
   VI X(N,0);
@@ -142,6 +142,38 @@ void solve() {
     if(F[S[0]]!=(X[N-1]+X[0]+X[1])%2) continue;
     string res(N,'?'); REP(i,N)res[i]=A[X[i]];
     cout<<res<<endl;
+    return;
+  }
+  cout<<-1<<endl;
+}
+
+string T;
+bool ok(string &S, int x0, int x1) {
+  int N=SZ(S);
+  VI x(N,-1);
+  x[0]=x0,x[1]=x1;
+  
+  auto nex=[&](int ani, int sign, int left)->int {
+    if(ani==sign) return left^1;
+    else return left;
+  };
+  
+  FOR(i,1,N-1) {
+    int l=x[i-1];
+    int ani=x[i],sign=S[i]=='o';
+    x[i+1]=nex(ani,sign,l);
+  }
+  int y=nex(x[N-1],S[N-1]=='o',x[N-2]);
+  
+  string ani="SW";
+  T=string(N,'?');
+  REP(i,N) T[i]=ani[x[i]];
+
+  return x[0]==y&&x[N-1]==nex(x[0],S[0]=='o',x[1]);
+}
+void solve() {
+  REP(i,2)REP(j,2) if(ok(S,i,j)) {
+    cout<<T<<endl;
     return;
   }
   cout<<-1<<endl;
