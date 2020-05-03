@@ -51,34 +51,29 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
  
  5:32-5:51 AC
  
+ 5/2/2020
+ 
+ solve again
+ 
  */
 
-const int MAX_N=12;
-const int MAX_M=1e3+1;
-LL A[MAX_M];
-int B[MAX_M];
+
+const int MAX_N=1e3+1;
+int masks[MAX_N],costs[MAX_N];
 int N,M;
 
-const LL Inf=1e10;
-LL memo[1<<MAX_N];
-LL f(int mask) {
-  if(mask==(1<<N)-1) return 0;
-  LL &res=memo[mask];
-  if(res>=0) return res;
-  res=Inf;
-  REP(i,M) {
-    int mask2=mask|B[i];
-    if(__builtin_popcount(mask2)>__builtin_popcount(mask)) {
-      SMIN(res,f(mask2)+A[i]);
-    }
-  }
-//  dump(mask,res);
-  return res;
-}
+const int Inf=1e9;
+int dp[MAX_N][(1<<12)+1];
 void solve() {
-  MINUS(memo);
-  LL res=f(0);
-  if(res>=Inf) res=-1;
+  REPE(i,M)REP(j,1<<N) dp[i][j]=Inf;
+  dp[0][0]=0;
+  REP(i,M)REP(mask,1<<N) if(dp[i][mask]<Inf) {
+    SMIN(dp[i+1][mask|masks[i]], dp[i][mask]+costs[i]);
+//    dump(i,mask,dp[i][mask],costs[i],dp[i+1][mask|masks[i]]);
+    SMIN(dp[i+1][mask],dp[i][mask]);
+  }
+  int res=dp[M][(1<<N)-1];
+  if(res==Inf) res=-1;
   cout<<res<<endl;
 }
 
@@ -89,15 +84,11 @@ int main() {
   
   cin>>N>>M;
   REP(i,M) {
-    int cnt;
-    cin>>A[i]>>cnt;
-    int mask=0;
-    REP(j,cnt) {
-      int x; cin>>x;
-      --x;
-      mask|=1<<x;
+    cin>>costs[i];
+    int L; cin>>L;
+    REP(j,L) {
+      int k; cin>>k,--k,masks[i]|=(1<<k);
     }
-    B[i]=mask;
   }
   solve();
   
