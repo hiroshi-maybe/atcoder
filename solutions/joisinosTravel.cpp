@@ -70,45 +70,44 @@ typedef tuple< int, int, int > III;
  Key:
   - All pairs shortest path + permutation
  
+ 5/2/2020
+ 
+ solve again.
+ 
  */
 
-// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
-const LL Inf=1e15;
 const int MAX_N=200+1;
-int V,M,R;
+int r[10];
+int N,M,R;
 LL mx[MAX_N][MAX_N];
-int rs[8];
 
+const LL Inf=1e18;
 void solve() {
-  REP(k,V)REP(i,V)REP(j,V) SMIN(mx[i][j],mx[i][k]+mx[k][j]);
-  VI P(R);REP(i,R)P[i]=i;
+  REP(k,N)REP(i,N)REP(j,N) SMIN(mx[i][j],mx[i][k]+mx[k][j]);
+  sort(r,r+R);
   LL res=Inf;
   do {
-    LL d=0;
-    REP(i,R-1) {
-      int u=rs[P[i]],v=rs[P[i+1]];
-      d+=mx[u][v];
-    }
-    SMIN(res,d);
-  } while(next_permutation(P.begin(),P.end()));
-  
+    LL ans=0;
+    REP(i,R-1) ans+=mx[r[i]][r[i+1]];
+    SMIN(res,ans);
+  } while(next_permutation(r,r+R));
   cout<<res<<endl;
 }
 
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
+  cout<<setprecision(12)<<fixed;
   
-  cin>>V>>M>>R;
-  
-  REP(i,V)REP(j,V)mx[i][j]=i==j?0:Inf;
-  
-  REP(i,R) cin>>rs[i],rs[i]--;
+  cin>>N>>M>>R;
+  REP(i,R) cin>>r[i],r[i]--;
+  REP(i,N)REP(j,N) mx[i][j]=i==j?0:Inf;
   REP(i,M) {
-    int u,v; LL d; cin>>u>>v>>d;
+    int u,v; LL w; cin>>u>>v>>w;
     --u,--v;
-    mx[u][v]=mx[v][u]=d;
+    mx[u][v]=mx[v][u]=w;
   }
   solve();
+  
   return 0;
 }
