@@ -69,22 +69,28 @@ typedef tuple< int, int, int > III;
  Summary:
   - Necessary condition is sufficient
  
+ 5/3/2020
+ 
+ solve again
+ 
  */
 
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
 //const int MAX_N=1e5+1;
 string S;
+int N;
+
 void solve() {
   int N=SZ(S);
   REP(i,N-1) if(S[i]==S[i+1]) {
-    cout<<i+1<<' '<<i+2<<endl;
+    cout<<i+1<<" "<<i+2<<endl;
     return;
   }
-  REP(i,N) if(i+2<N&&S[i]==S[i+2]) {
-    cout<<i+1<<' '<<i+3<<endl;
+  REP(i,N-2) if(S[i]==S[i+2]) {
+    cout<<i+1<<" "<<i+3<<endl;
     return;
   }
-  cout<<-1<<' '<<-1<<endl;
+  cout<<-1<<" "<<-1<<endl;
 }
 
 int main() {
