@@ -90,6 +90,10 @@ typedef tuple< int, int, int > III;
   - I didn't have idea of projecting to "ring" (we need to see 18-24 = 6 hours gap too)
   - cycle => ring (abstraction)
  
+ 5/3/2020
+ 
+ Add solution again
+ 
  */
 
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
@@ -120,6 +124,32 @@ int solve() {
 //    dump(ming);
 //    dumpAR(X);
     SMAX(res,ming);
+  }
+  return res;
+}
+
+int solve_greedy() {
+  VI cnt(13,0);
+  REP(i,N+1) cnt[D[i]]++;
+//  dumpc(cnt);
+  REP(i,13) if(cnt[i]>2) return 0;
+  if(cnt[0]==2||cnt[12]==2) return 0;
+  VI B(24,0);
+  bool lr=0;
+  REP(i,13) {
+    if(cnt[i]==2) B[i]=B[i==0?0:(24-i)]=1;
+    else if(cnt[i]==1) {
+      B[((i==0||lr)?i:(24-i))]=1;
+      lr^=1;
+    } else if(cnt[i]==0) continue;
+    else assert(false);
+  }
+//  dumpc(B);
+  int res=24;
+  REP(i,24) if(B[i]) {
+    int mind=24;
+    REP(j,24) if(i!=j&&B[j]) SMIN(mind,min(abs(i-j),abs(j+24-i)));
+    SMIN(res,mind);
   }
   return res;
 }
