@@ -71,6 +71,10 @@ typedef tuple< int, int, int > III;
   - keeping `min` in memory is neet
   - I should keep independency in mind more
  
+ 5/5/2020
+ 
+ Add solution for non-distinctive A[i]
+ 
  */
 
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
@@ -97,6 +101,29 @@ void solve() {
   FOR(i,1,N) mins[i]=min(mins[i-1],A[i]);
   FOR(i,1,N) D[-(A[i]-mins[i-1])]++;
   cout<<D.begin()->second<<endl;
+}
+
+void solve_nondistinctive_A() {
+  map<int,int> gaps1;
+  int mina=A[0];
+  REP(i,N) {
+    int a=A[i];
+    if(a-mina>0) gaps1[a-mina]++;
+    if(a<mina) mina=a;
+  }
+  int maxa=A[N-1];
+  map<int,int> gaps2;
+  for(int i=N-1; i>=0; --i) {
+    int a=A[i];
+    if(maxa-a>0) gaps2[maxa-a]++;
+    if(a>maxa) maxa=a;
+  }
+  if(SZ(gaps1)==0) {
+    cout<<0<<endl;
+    return;
+  }
+  assert(gaps1.rbegin()->first==gaps2.rbegin()->first);
+  cout<<min(gaps1.rbegin()->second,gaps2.rbegin()->second)<<endl;
 }
 
 int main() {
