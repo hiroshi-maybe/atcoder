@@ -149,21 +149,17 @@ void solve() {
   cout<<res<<endl;
 }*/
 
+const LL Inf=1e18;
 void solve() {
-  LL res=0;
+  LL res=-Inf;
   REP(mask,8) {
-    vector<LL> A(N);
-    REP(i,N) {
-      LL a=0;
-      REP(k,3) {
-        LL x=X[i][k];
-        if(mask&(1<<k)) x=-x;
-        a+=x;
-      }
-      A[i]=a;
+    vector<LL> B(N);
+    REP(i,N)REP(j,3) {
+      LL sign=((mask>>j)&1)?1:-1;
+      B[i]+=X[i][j]*sign;
     }
-    sort(A.rbegin(),A.rend());
-    SMAX(res,accumulate(A.begin(),A.begin()+M,0LL));
+    sort(ALL(B)),reverse(ALL(B));
+    SMAX(res,accumulate(B.begin(),B.begin()+M,0LL));
   }
   cout<<res<<endl;
 }
