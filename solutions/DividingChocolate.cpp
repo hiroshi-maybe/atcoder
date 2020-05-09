@@ -85,6 +85,10 @@ private:
  https://twitter.com/laycrs/status/1241721381202493442
  https://twitter.com/kzyKT_M/status/1241721347144736768
  
+ 5/8/2020
+ 
+ 17:34-17:50 solve again
+ 
  */
 
 const int MAX_N=10+1;
@@ -94,7 +98,45 @@ int H,W,K;
 vector<vector<int>> A;
 TwoDimCumSum cum;
 
-const int Inf=1e7;
+const int Inf=1e8;
+void solve() {
+  int res=H*W;
+  REP(mask,1<<(H-1)) {
+    VI gs(H,0);
+    REP(i,H-1) {
+      gs[i+1]=gs[i]+((mask>>i)&1);
+    }
+    int G=gs[H-1]+1;
+    int w=0;
+    VI cnt(G);
+    int ans=__builtin_popcount(mask);
+    REP(j,W) {
+      VI cnt2(G);
+      REP(i,H) cnt2[gs[i]]+=S[i][j]-'0';
+      bool ok=true;
+      REP(i,G) if(cnt[i]+cnt2[i]>K) {
+        ok=false;
+      }
+      if(!ok) {
+        if(w==0) {
+          ans=Inf;
+          break;
+        } else {
+          w=1;
+          cnt=cnt2;
+          ++ans;
+        }
+      } else {
+        REP(i,G) cnt[i]+=cnt2[i];
+        ++w;
+      }
+    }
+    SMIN(res,ans);
+  }
+  cout<<res<<endl;
+}
+
+
 bool f(int D) {
   bool res=false;
   REP(mask,1<<(H-1)) {
@@ -130,7 +172,7 @@ bool f(int D) {
   return res;
 }
 
-void solve() {
+void solve_old() {
   A=VV<int>(H,VI(W));
   REP(i,H)REP(j,W) A[i][j]=S[i][j]-'0';
   cum.init(A);
