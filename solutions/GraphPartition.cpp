@@ -58,36 +58,39 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
  
  https://img.atcoder.jp/agc039/editorial.pdf
  
+ 5/9/2020
+ 
+ 17:43-18:10 solve again
+ 
  */
 
 const int MAX_N=200+1;
+string S[MAX_N];
+int mx[MAX_N][MAX_N];
 int N;
 
-VI G[MAX_N];
-int mx[MAX_N][MAX_N];
-int isb=true;
+bool ans=true;
+const int Inf=1e7;
 int viz[MAX_N];
-void dfs(int u, int c=0) {
+void dfs(int u, int col) {
   if(viz[u]!=-1) {
-    isb&=(viz[u]==c);
+    if(viz[u]!=col) ans=false;
     return;
   }
-  viz[u]=c;
-  FORR(v,G[u]) dfs(v,c^1);
+  viz[u]=col;
+  REP(v,N)if(u!=v&&S[u][v]=='1') dfs(v,col^1);
 }
 void solve() {
-  MINUS(viz);
-  dfs(0);
-  if(!isb) {
-    cout<<-1<<endl;
-    return;
-  }
-  const int Inf=1e8;
-  REP(i,N)REP(j,N)if(i!=j&&mx[i][j]==0) mx[i][j]=Inf;
+  REP(i,N)REP(j,N) mx[i][j]=i==j?0:Inf;
+  REP(i,N)REP(j,N)if(S[i][j]=='1') mx[i][j]=1;
+
   REP(k,N)REP(i,N)REP(j,N) SMIN(mx[i][j],mx[i][k]+mx[k][j]);
   int res=0;
-  REP(i,N)REP(j,N) SMAX(res,mx[i][j]);
-  cout<<res+1<<endl;
+  REP(i,N)REP(j,N)SMAX(res,mx[i][j]+1);
+  MINUS(viz);
+  dfs(0,0);
+  if(!ans) res=-1;
+  cout<<res<<endl;
 }
 
 int main() {
@@ -96,13 +99,7 @@ int main() {
   cout<<setprecision(12)<<fixed;
   
   cin>>N;
-  REP(i,N) {
-    string s; cin>>s;
-    FOR(j,i+1,N) if(s[j]=='1') {
-      G[i].push_back(j),G[j].push_back(i);
-    }
-    REP(j,N) mx[i][j]=(s[j]=='1');
-  }
+  REP(i,N) cin>>S[i];
   solve();
   
   return 0;
