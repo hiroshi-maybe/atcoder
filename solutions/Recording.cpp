@@ -50,17 +50,24 @@ typedef tuple< int, int, int > III;
 #define dump4(x,y,z,a) if(TRACE) { cerr << #x << " = " << (x) << ", " << #y << " = " << (y) << ", " << #z << " = " << (z) << ", " << #a << " = " << (a) << endl; }
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
+// $ cp-batch Recording | diff Recording.out -
+// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address Recording.cpp && ./a.out
+
 /*
- 
+
  8/7/2018
- 
+
  23:45-23:52 analysis
  23:58 AC
- 
+
  Editorials:
   - https://img.atcoder.jp/abc080/editorial.pdf
   - https://youtu.be/GWhYUxeDe70?t=2099
- 
+
+ 5/19/2020
+
+ 23:27-23:52 solve again
+
  */
 
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
@@ -94,7 +101,7 @@ void solve() {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  
+
   cin>>N>>C;
   REP(i,N) {
     int s,t,c; cin>>s>>t>>c;
