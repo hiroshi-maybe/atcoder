@@ -51,12 +51,12 @@ typedef tuple< int, int, int > III;
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
 /*
- 
+
  7/12/2018
- 
+
  16:08-16:58 AC
  18:50-19:02 add solution with distance comparison shown in editorial
- 
+
  Editorials:
   - https://atcoder.jp/img/arc078/editorial.pdf
   - https://youtu.be/sWnEkDYPxxs?t=1686
@@ -66,28 +66,61 @@ typedef tuple< int, int, int > III;
   - http://omochan.hatenablog.com/entry/2017/07/15/235032
   - http://htkb-procon.hateblo.jp/entry/2017/07/16/164932
   - http://bttb.s1.valueserver.jp/wordpress/blog/2017/07/16/atcoder-beginner-contest-067-d-fennec-vs-snuke/
- 
+
  @kmjp's beautiful dfs solution:
   - https://beta.atcoder.jp/contests/arc078/submissions/1423142
- 
+
  Key:
   - |{dist(1,x)>=dist(N,x) : x∈V}| vs |{dist(1,x)>dist(N,x) : x∈V}|
   - dfs can compute distance from node `1` and `N`
- 
+
  Summary:
   - Tons of implementation bugs 😡
   - Comparing distance from `1` and `N` is beautiful.
- 
- 
+
+ 5/22/2020
+
+ 8:50-9:30 solve again
+
  */
 
-// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
-// 16:08-16:58 AC
+// $ cp-batch FennecVSSnuke | diff FennecVSSnuke.out -
+// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address FennecVSSnuke.cpp && ./a.out
+
 const string P1="Fennec",P2="Snuke";
 const int MAX_N=1e5+1;
 int N;
 VI E[MAX_N];
 int C[MAX_N];
+
+VI G[MAX_N];
+int D[2][MAX_N];
+void dfs2(int u, int pre, int c, int d) {
+  D[c][u]=d;
+  FORR(v,G[u]) if(v!=pre) dfs2(v,u,c,d+1);
+}
+void solve() {
+  dfs2(0,-1,0,0),dfs2(N-1,-1,1,0);
+  VI cnt(2,0);
+  REP(u,N) cnt[(D[0][u]<=D[1][u])?0:1]++;
+  cout<<(cnt[0]>cnt[1]?"Fennec":"Snuke")<<endl;
+}
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(0);
+  cout<<setprecision(12)<<fixed;
+
+  cin>>N;
+  REP(i,N-1) {
+    int u,v; cin>>u>>v;
+    --u,--v;
+    G[u].push_back(v),G[v].push_back(u);
+  }
+  solve();
+
+  return 0;
+}
 
 VI P;
 void dfs(int u, int pre, VI &cur) {
@@ -126,7 +159,7 @@ void solve_org() {
   dumpAR(Q2);
   FORR(u,Q1) dfs2(u,1);
   FORR(u,Q2) dfs2(u,2);
-  
+
   int cnt[3]={};
   REPE(i,N) cnt[C[i]]++;
   dump2(cnt[1],cnt[2]);
@@ -134,12 +167,11 @@ void solve_org() {
   cout<<res<<endl;
 }
 
-int D[2][MAX_N];
 void dfs(int u, int pre, int c, int d) {
   D[c][u]=d;
   FORR(v,E[u]) if(v!=pre) dfs(v,u,c,d+1);
 }
-void solve() {
+void solve_kmjp() {
   dfs(1,-1,0,0),dfs(N,-1,1,0);
   int cnt1=0,cnt2=0;
   FORE(u,1,N) (D[0][u]<=D[1][u]?cnt1:cnt2)++;
@@ -148,7 +180,7 @@ void solve() {
   cout<<res<<endl;
 }
 
-int main() {
+int main_org() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
   REPE(i,N) E[i].clear();
