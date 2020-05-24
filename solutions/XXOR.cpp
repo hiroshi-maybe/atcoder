@@ -46,25 +46,29 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address XXOR.cpp && ./a.out
 
 /*
- 
+
  2/10/2019
- 
+
  18:27-18:49 WA
- 
+
  2/11/2019
- 
+
  10:45-11:30 AC
- 
+
  It took 45 mins to fix overflow bug 🖕
  1e12*2^50 can be added in invalid transition.
  I misunderstood that this case is ignored by -Inf.
  However x*c[k^1] exceeds LL max.
- 
+
  https://img.atcoder.jp/abc117/editorial.pdf
  http://drken1215.hatenablog.com/entry/2019/02/03/224200
  https://betrue12.hateblo.jp/entry/2019/02/03/234159
  http://hamko.hatenadiary.jp/entry/2019/02/03/224024
- 
+
+ 5/24/2020
+
+ 14:19-14:51 solve again (2WA)
+
  */
 
 const int MAX_N=1e6+1;
@@ -73,31 +77,33 @@ LL K;
 int N;
 
 const LL Inf=1e18;
-int cnt[50];
-LL dp[51][2];
-LL solve_dp() {
-  REP(i,N)REP(j,50) cnt[j]+=(A[i]>>j)&1;
-  reverse(cnt,cnt+50);
-  REPE(i,50)REP(j,2)dp[i][j]=-Inf;
+LL cnt[61][2];
+LL dp[61][2];
+int ith(LL mask, int i) { return (mask>>i)&1; }
+void solve_dp() {
+  REP(i,N) {
+    LL a=A[i];
+    REP(j,60) cnt[j][ith(a,j)]++;
+  }
 
-  dp[0][0]=0;
-  REP(i,50)REP(less,2) if(dp[i][less]>=0) {
-    int kbit=(K>>(49-i))&1;
-    int a=0,b=1;
-    if(!less&&kbit==0) b=0;
-    LL x=1LL<<(49-i);
-    LL c[2]={N-cnt[i],cnt[i]};
-    FORE(k,a,b) {
-      SMAX(dp[i+1][less|(k<kbit)],dp[i][less]+x*c[k^1]);
+  const LL Inf=1e18;
+  REP(i,61)REP(j,2) dp[i][j]=-Inf;
+  dp[60][0]=0;
+  for(int i=59; i>=0; --i) REP(less,2) if(dp[i+1][less]>=0) {
+    int hb=less?1:ith(K,i);
+    // dump(i,less,hb,dp[i+1][less]);
+    REPE(d,hb) {
+      SMAX(dp[i][less|(d<hb)], dp[i+1][less]+(1LL<<i)*cnt[i][1^d]);
     }
   }
-  return max(dp[50][0],dp[50][1]);
+  cout<<max(dp[0][0],dp[0][1])<<endl;
 }
 
 LL solve() {
+  vector<LL> cnt(51);
   REP(i,N)REP(j,50) cnt[j]+=(A[i]>>j)&1;
-  reverse(cnt,cnt+50);
-  
+  reverse(ALL(cnt));
+
   vector<LL> B(51,0);
   for(int i=49; i>=0; --i) {
     LL b=1LL<<(49-i);
@@ -143,7 +149,7 @@ void test() {
   K=genRandNum(0,(LL)1e3);
   LL res=-Inf;
   REPE(k,K) SMAX(res,f(k));
-  
+
   LL act=solve();
   if(res!=act) {
     dump(res,act,K);
@@ -156,12 +162,12 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
   cout<<setprecision(12)<<fixed;
-  
+
 //  while(true) test();
-  
+
   cin>>N>>K;
   REP(i,N) cin>>A[i];
   cout<<solve()<<endl;
-  
+
   return 0;
 }
