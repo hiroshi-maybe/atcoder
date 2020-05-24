@@ -46,18 +46,37 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address Friendships.cpp && ./a.out
 
 /*
- 
+
  6/22/2019
- 
+
  5:50-6:23 AC
- 
+
  https://img.atcoder.jp/abc131/editorial.pdf
  http://drken1215.hatenablog.com/entry/2019/06/22/232000
- 
+
+ 5/24/2020
+
+ 15:28-16:00 solve again
+
  */
 
 const int MAX_N=101+1;
 int N,K;
+
+void nope() {
+  cout<<-1<<endl;
+  exit(0);
+}
+void solve_2nd() {
+  if(K>(N-1)*(N-2)/2) nope();
+  vector<II> es;
+  REP(j,N)REP(i,j) es.emplace_back(i,j);
+  sort(ALL(es));
+  int k=K;
+  while(k--) es.pop_back();
+  cout<<SZ(es)<<endl;
+  FORR(p,es) cout<<p.first+1<<" "<<p.second+1<<endl;
+}
 
 int mx[MAX_N][MAX_N],mx2[MAX_N][MAX_N];
 void check() {
@@ -94,9 +113,9 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
   cout<<setprecision(12)<<fixed;
-  
+
   cin>>N>>K;
   solve();
-  
+
   return 0;
 }
