@@ -51,25 +51,44 @@ typedef tuple< int, int, int > III;
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
 /*
- 
+
  8/22/2018
- 
+
  21:30-21:33 analysis
  21:36 got AC
- 
+
  Editorials:
   - https://youtu.be/7bbIZTIeDZM?t=1800
   - https://img.atcoder.jp/abc105/editorial.pdf
   - https://www.hamayanhamayan.com/entry/2018/08/12/010816
   - http://kazune-lab.net/contest/2018/08/11/abc105/#d---candy-distribution
- 
+
+ 5/25/2020
+
+ 16:11-16:16 solve again
+
  */
 
-// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
+// $ cp-batch CandyDistribution | diff CandyDistribution.out -
+// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address CandyDistribution.cpp && ./a.out
+
 const int MAX_N=1e5+1;
 int N;
 LL M;
 LL A[MAX_N];
+
+void solve_2nd() {
+  LL res=0;
+  map<int,int> cnt;
+  cnt[0]=1;
+  LL cur=0;
+  REP(i,N) {
+    cur+=A[i];
+    res+=cnt[cur%M];
+    cnt[cur%M]++;
+  }
+  cout<<res<<endl;
+}
 
 unordered_map<int,int> X;
 LL cum[MAX_N];
@@ -88,7 +107,7 @@ void solve() {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  
+
   cin>>N>>M;
   REP(i,N) cin>>A[i];
   solve();
