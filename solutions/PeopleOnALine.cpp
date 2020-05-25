@@ -51,12 +51,12 @@ typedef tuple< int, int, int > III;
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
 /*
- 
+
  7/2/2018
- 
+
  17:15-17:25 analysis
  17:26-17:40 implement and got AC
- 
+
  Editorials:
   - https://img.atcoder.jp/arc090/editorial.pdf
   - https://youtu.be/br3ze-KC6WA?t=1436
@@ -68,19 +68,23 @@ typedef tuple< int, int, int > III;
   - http://ferin-tech.hatenablog.com/entry/2018/01/28/224027
   - https://pitsbuffersolution.com/compro/atcoder/arc090d.php
   - http://kazune-lab.net/contest/2018/01/28/arc090/
- 
+
  Editorials are adding reversed edge so that any node can be start of search. Very smart 👏
  My question is that can we guarantee that all the original edges are passed?
  The answer is probably yes as long as visited vertices are checked.
  In either dfs or bfs, pending edges are anyway checked later.
- 
+
  Submit solutions:
   - https://beta.atcoder.jp/contests/arc090/submissions/2027546 bfs solution by @yutaka1999
   - https://beta.atcoder.jp/contests/arc090/submissions/2027542 dfs solution by @kmjp
- 
+
  Summary:
   - Topological sort was over-kill 😅
- 
+
+ 5/24/2020
+
+ 16:40-17:03 solve again
+
  */
 
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
@@ -100,7 +104,7 @@ bool solve() {
     LL d=D[i];
     OUT[u][v]=d,IN[v][u]=d;
   }
-  
+
   queue<int> Q;
   REP(i,N) if(IN[i].empty()&&SZ(OUT[i])) Q.emplace(i),dist[i]=0;
   while(SZ(Q)) {
@@ -121,7 +125,7 @@ bool solve() {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  
+
   cin>>N>>M;
   REP(i,M) cin>>L[i]>>R[i]>>D[i];
   string res=solve()?yes:no;
