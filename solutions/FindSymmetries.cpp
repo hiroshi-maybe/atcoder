@@ -51,16 +51,16 @@ typedef tuple< int, int, int > III;
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
 /*
- 
+
  4/28/2018 AGC023
- 
+
  21:40-23:20 time up 😞
- 
+
  Editorials:
   - https://img.atcoder.jp/agc023/editorial.pdf
   - https://youtu.be/8BHBFMrZ8VM?t=780
   - http://hamko.hatenadiary.jp/entry/2018/04/29/000328
- 
+
  Tweets:
   - process
    - https://twitter.com/evima0/status/990235557841154048
@@ -74,24 +74,32 @@ typedef tuple< int, int, int > III;
    - https://twitter.com/satanic0258/status/990234655826763776
    - https://twitter.com/kjuner8/status/990234726383239168
     - rolling hash
- 
+
  15:00-15:21 add solution
- 
+
  Key:
   - (A+x,B+x) makes same board as (A,B)
   - Saying that depending on only A-B is interesting
    - We can fix B=0 and only iterate A from 0 to N-1
- 
+
  Summary:
   - Symmetry is a strong constraint. I thought I could reduce to different condition though, no luck
   - I had an idea of (rolling) hash. However I didn't think it's appropriate for 500 pt problem
   - I played around an experiment with 3x3 matrix though, I didn't notice that (A+x,B+x) == (A,B) 😞
   - It turns out this is a grouping problem
   - Analyzing between (A,B), (A+1,B+1) may have been helpful.
- 
+
+ 5/25/2020
+
+ 20:51-21:00, 8:37-9:43 give up
+ 10:00 got AC after reading editorial
+
+ https://twitter.com/hanseilimak/status/1264961807359152134
+
  */
 
-// $ g++ -std=c++11 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
+// $ cp-batch FindSymmetries | diff FindSymmetries.out -
+// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address FindSymmetries.cpp && ./a.out
 const int MAX_N=301;
 int N;
 string S[MAX_N];
@@ -100,7 +108,7 @@ LL solve() {
   REP(a,N) {
     vector<string> SS(N,string(N,'#'));
     REP(i,N)REP(j,N) SS[i][j]=S[(i+a)%N][j];
-    
+
     bool ok=true;
     REP(j,N)REP(i,j) ok&=(SS[i][j]==SS[j][i]);
     res+=ok*N;
@@ -114,7 +122,7 @@ void test() {
     bool B[4][4];
     REP(i,4)REP(j,4)B[i][j]=(X[i]>>j)&1;
     bool BB[4][4]={};
-    
+
     int res=0;
     REP(a,4)REP(b,4) {
       REP(i,4)REP(j,4)BB[i][j]=B[(i+a)%4][(j+b)%4];
@@ -129,12 +137,12 @@ void test() {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  
+
   cin>>N;
   REP(i,N) cin>>S[i];
   cout<<solve()<<endl;
-  
+
 //  test();
-  
+
   return 0;
 }
