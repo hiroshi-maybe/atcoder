@@ -1,34 +1,17 @@
-#include <iostream>
-#include <iomanip>
-#include <algorithm>
-#include <vector>
-#include <string>
-#include <sstream>
-#include <set>
-#include <map>
-#include <iostream>
-#include <utility>
-#include <cctype>
-#include <queue>
-#include <stack>
-#include <cstdio>
-#include <cstdlib>
-#include <cmath>
-#include <unordered_set>
-#include <unordered_map>
-#include <limits.h>
-#include <cstring>
-#include <tuple>
-#include <cassert>
-#include <numeric>
+#include <bits/stdc++.h>
 using namespace std;
 // type alias
 typedef long long LL;
-typedef vector < int > VI;
-typedef unordered_map < int, int > MAPII;
-typedef unordered_set < int > SETI;
-typedef pair< int , int > II;
-typedef tuple< int, int, int > III;
+typedef pair<int,int> II;
+typedef tuple<int,int,int> III;
+typedef vector<int> VI;
+typedef vector<string> VS;
+typedef unordered_map<int,int> MAPII;
+typedef unordered_set<int> SETI;
+template<class T> using VV=vector<vector<T>>;
+// minmax
+template<class T> inline T SMIN(T& a, const T b) { return a=(a>b)?b:a; }
+template<class T> inline T SMAX(T& a, const T b) { return a=(a<b)?b:a; }
 // repetition
 #define FORE(i,a,b) for(int i=(a);i<=(b);++i)
 #define REPE(i,n)  for(int i=0;i<=(n);++i)
@@ -36,30 +19,38 @@ typedef tuple< int, int, int > III;
 #define REP(i,n)  for(int i=0;i<(n);++i)
 #define FORR(x,arr) for(auto& x:arr)
 #define SZ(a) int((a).size())
+// collection
+#define ALL(c) (c).begin(),(c).end()
 // DP
 #define MINUS(dp) memset(dp, -1, sizeof(dp))
 #define ZERO(dp) memset(dp, 0, sizeof(dp))
-// minmax
-#define SMAX(a,b) a = max(a,b)
-#define SMIN(a,b) a = min(a,b)
+// stdout
+#define println(args...) fprintf(stdout, ##args),putchar('\n');
 // debug cerr
-#define TRACE true
-#define dump(x) if(TRACE) { cerr << #x << " = " << (x) << endl; }
-#define dump2(x,y) if(TRACE) { cerr << #x << " = " << (x) << ", " << #y << " = " << (y) << endl; }
-#define dump3(x,y,z) if(TRACE) { cerr << #x << " = " << (x) << ", " << #y << " = " << (y) << ", " << #z << " = " << (z) << endl; }
-#define dump4(x,y,z,a) if(TRACE) { cerr << #x << " = " << (x) << ", " << #y << " = " << (y) << ", " << #z << " = " << (z) << ", " << #a << " = " << (a) << endl; }
-#define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
-
+template<class Iter> void __kumaerrc(Iter begin, Iter end) { for(; begin!=end; ++begin) { cerr<<*begin<<','; } cerr<<endl; }
+void __kumaerr(istream_iterator<string> it) { (void)it; cerr<<endl; }
+template<typename T, typename... Args> void __kumaerr(istream_iterator<string> it, T a, Args... args) { cerr<<*it<<"="<<a<<", ",__kumaerr(++it, args...); }
+template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, const std::pair<S,T>& _p) { return _os<<"{"<<_p.first<<','<<_p.second<<"}"; }
+#define __KUMATRACE__ true
+#ifdef __KUMATRACE__
+#define dump(args...) { string _s = #args; replace(_s.begin(), _s.end(), ',', ' '); stringstream _ss(_s); istream_iterator<string> _it(_ss); __kumaerr(_it, args); }
+#define dumpc(ar) { cerr<<#ar<<": "; FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
+#define dumpC(beg,end) { cerr<<"~"<<#end<<": "; __kumaerrc(beg,end); }
+#else
+#define dump(args...)
+#define dumpc(ar)
+#define dumpC(beg,end)
+#endif
 /*
- 
+
  8/9/2018
- 
+
  14:00-14:25 analysis
  14:51 redesign algorithm
  15:02 1WA and gave up
- 
+
  18:10-18:42 read editorials and add solution
- 
+
  Editorials:
   - https://youtu.be/VJntQuR2zNI?t=1988
   - https://img.atcoder.jp/abc075/editorial.pdf
@@ -67,11 +58,11 @@ typedef tuple< int, int, int > III;
   - http://tatanaideyo.hatenablog.com/entry/2017/10/16/125741
    - O(N^3) solution
   - http://what-alnk.hatenablog.com/entry/2017/10/15/070000
- 
+
  Left side or right side of rectangle should be picked from N points.
  Top/bottom side should be picked from N points as well.
  We can run N^4 loops to select them.
- 
+
  |-------------| <- y[i]
  |             |
  |             |
@@ -79,30 +70,61 @@ typedef tuple< int, int, int > III;
 
  ^            ^
  X[i]         X[j]
- 
+
  We don't need to specify edge points to calculate area.
  What we need to compute area is max/min X and max/min Y.
- 
+
   area = (max X - min X) * (max Y - min Y)
- 
+
  Thus selection of X-coordinate and Y-coordinate is independent!!
  It's possible to count number of points inside the rectangle in O(N).
  O(N^5) algorithm should work.
- 
+
  Key:
   - brute-force
   - we select x-coordinate and y-coordinate independently
- 
+
  Summary:
   - It's typical that X-coordinate and Y-coordinate are independent
   - I haven't even looked for O(N^5) algorithm...
- 
+
+ 5/25/2020
+
+ 22:28-23:01 solve again
+
  */
 
-// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
+// $ cp-batch  Axis-ParallelRectangle | diff  Axis-ParallelRectangle.out -
+// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address  Axis-ParallelRectangle.cpp && ./a.out
+
 const int MAX_N=50+1;
 int N,K;
 pair<LL,LL> P[MAX_N];
+
+void solve_second() {
+  LL res=4e18;
+  sort(P,P+N);
+  VI xs;
+  REP(i,N) xs.push_back(P[i].first);
+  sort(ALL(xs)),xs.erase(unique(ALL(xs)), xs.end());
+  int M=SZ(xs);
+  REP(i,M)FOR(j,i,M) {
+    VI ys;
+    REP(k,N) if(xs[i]<=P[k].first&&P[k].first<=xs[j]) {
+      ys.push_back(P[k].second);
+    }
+    sort(ALL(ys));
+    //dump(xs[i],xs[j]);
+    //dumpc(ys);
+    int L=SZ(ys);
+    LL dx=xs[j]-xs[i];
+    REP(k,L-K+1) {
+      SMIN(res,dx*(ys[k+K-1]-ys[k]));
+    }
+  }
+  cout<<res<<endl;
+}
+
 void solve_wrong() {
   LL res=4e18+10;
   sort(P,P+N);
@@ -137,7 +159,7 @@ void solve() {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  
+
   cin>>N>>K;
   REP(i,N) {
     LL x,y; cin>>x>>y;
