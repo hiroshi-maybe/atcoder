@@ -51,28 +51,48 @@ typedef tuple< int, int, int > III;
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
 /*
- 
+
  7/12/2018
- 
+
  12:05-12:23,12:42-13:42 give up
  15:45-16:00 add solution (2WA due to wrong output format)
- 
+
  Key:
   - Very large board => No need to paint optimally
   - No checkboard!!!
- 
+
  Summary:
   - Start analysis from check board => death 😞
    - https://twitter.com/eiya5498513/status/977905602222374913
   - I had a plan to put floating one block. However I didn't have idea to paint black/white firstly 👎
- 
+
+ 5/27/2020
+
+ 8:09-8:15 solve again
+
  */
 
-// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
-// 12:05-12:23,12:42-13:42 give up
+// $ cp-batch GridComponents | diff GridComponents.out -
+// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address GridComponents.cpp && ./a.out
 const int MAX_N=100+1;
 int A,B;
 int G[MAX_N][MAX_N]={};
+
+void paint(vector<string> &A, int cnt, char c) {
+  REP(k,cnt) {
+    int i=k/24,j=k%24;
+    A[2*i+1][2*j+1]=c;
+  }
+}
+void solve_2nd() {
+  vector<string> L(100,string(50,'.')),R(100,string(50,'#'));
+  paint(L,B-1,'#'),paint(R,A-1,'.');
+  cout<<100<<" "<<100<<endl;
+  REP(i,100) {
+    cout<<L[i]<<R[i]<<endl;
+  }
+}
+
 void solve_wrong() {
   ZERO(G);
   int a=A,b=B;
@@ -89,7 +109,7 @@ void solve_wrong() {
       }
     }
   } else {
-    
+
   }
   REP(i,100) {
     REP(j,100) cout<<G[i][j];
@@ -120,7 +140,7 @@ void solve() {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  
+
   cin>>A>>B;
   solve();
   return 0;
