@@ -50,13 +50,13 @@ typedef tuple< int, int, int > III;
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
 /*
- 
+
  7/31/2018
- 
+
  25:10-25:35 AC
- 
+
  N is small. Once figureing out brute-forcing four groups, it was straightforward.
- 
+
  Editorials:
   - https://atcoder.jp/img/arc073/editorial.pdf
   - https://youtu.be/0_ztXTCTOfw?t=2148
@@ -66,26 +66,65 @@ typedef tuple< int, int, int > III;
   - http://hamayanhamayan.hatenablog.jp/entry/2017/04/30/165332
   - https://ei1333.hateblo.jp/entry/2017/05/01/004235
   - http://baitop.hatenadiary.jp/entry/2018/06/26/233817
- 
+
  Editorial video is saying that search space is at most (N/4)^4=390625
  I'm interested in how it's calculated 🤔
  I actually computed by `calcMaxSearchspace()` and found out that it's 176851<390625.
- 
+
  Below is my guess:
  Computation happens a*b*c*(N-a-b-c) times which is maximal if they are even like a=N/4,b=N/4,c=N/4,d=N/4.
  Thus complexity is upper-bounded by (N/4)^4.
- 
+
  Summary:
   - Implementation was a bit heavy
- 
+
+ 5/26/2020
+
+ 9:30-9:44 solve again
+
  */
 
-// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
+// $ cp-batch SimpleKnapsack | diff SimpleKnapsack.out -
+// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address SimpleKnapsack.cpp && ./a.out
+
 //const int MAX_N=100+1;
 LL w0,W;
 vector<LL> WS[4];
 vector<LL> cum[4];
 int N;
+
+const int MAX_N=1e2+10;
+LL wws[MAX_N],vs[MAX_N];
+
+const LL Inf=1e13;
+LL dp[MAX_N][MAX_N][MAX_N*3];
+void solve_2nd() {
+  REPE(i,N)REPE(j,N)REPE(k,N*3) dp[i][j][k]=-Inf;
+  dp[0][0][0]=0;
+  LL w0=wws[0];
+  REP(i,N)REP(j,N)REPE(k,N*3) {
+    SMAX(dp[i+1][j+1][k+wws[i]-w0],dp[i][j][k]+vs[i]);
+    SMAX(dp[i+1][j][k],dp[i][j][k]);
+  }
+  LL res=0;
+  REPE(j,N)REPE(k,N*3) if(dp[N][j][k]>=0&&w0*j+k<=W) {
+    SMAX(res,dp[N][j][k]);
+  }
+  cout<<res<<endl;
+}
+
+int main_2nd() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(0);
+
+  cin>>N>>W;
+  REP(i,N) cin>>wws[i]>>vs[i];
+  solve_2nd();
+
+  return 0;
+}
+
+
 LL solve() {
   REP(i,4) {
     sort(WS[i].rbegin(),WS[i].rend());
@@ -93,7 +132,7 @@ LL solve() {
     cum[i].resize(M+1,0);
     REP(j,M) cum[i][j+1]=cum[i][j]+WS[i][j];
   }
-  
+
   LL res=0;
   REPE(a,N)if(a<SZ(cum[0])) {
     REPE(b,N-a)if(b<SZ(cum[1])) {
@@ -123,7 +162,7 @@ void calcMaxSearchspace() {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  
+
   cin>>N>>W;
   LL v0;
   cin>>w0>>v0;
@@ -134,6 +173,6 @@ int main() {
     WS[w-w0].push_back(v);
   }
   cout<<solve()<<endl;
-  
+
   return 0;
 }
