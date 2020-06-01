@@ -82,24 +82,42 @@ struct ModInt {
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address VirusTree2.cpp && ./a.out
 
 /*
- 
+
  7/7/2019
- 
+
  5:49-6:23 AC
- 
+
  https://img.atcoder.jp/abc133/editorial.pdf
- 
+
  Suppose colors in parent level is determined.
  Then we give `c` colors out of K-2 (except parent and grandparent).
  Such a way is P(K-2,c).
- 
+
+ 6/1/2020
+
+ 8:57-9:30 solve again
+
  */
 
 const int MAX_N=1e6+1;
 int N,K;
+VI G[MAX_N];
+
+ModInt ans=1;
+void dfs1(int u, int pre) {
+  int a=K-(pre!=-1)-1;
+  FORR(v,G[u]) if(v!=pre) {
+    ans*=a--;
+    dfs1(v,u);
+  }
+}
+void solve() {
+  ans=K;
+  dfs1(0,-1);
+  cout<<ans<<endl;
+}
 
 int res[MAX_N];
-VI G[MAX_N];
 void dfs(int u, int pre) {
   int p=pre!=-1;
   int k=K-p-1;
@@ -109,7 +127,7 @@ void dfs(int u, int pre) {
     dfs(v,u);
   }
 }
-void solve() {
+void solve_org() {
   res[0]=K;
   dfs(0,-1);
   ModInt ans(1);
@@ -124,7 +142,7 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
   cout<<setprecision(12)<<fixed;
-  
+
   cin>>N>>K;
   REP(i,N-1) {
     int u,v; cin>>u>>v;
@@ -132,6 +150,6 @@ int main() {
     G[u].push_back(v),G[v].push_back(u);
   }
   solve();
-  
+
   return 0;
 }
