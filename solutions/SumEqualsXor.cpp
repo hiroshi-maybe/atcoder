@@ -78,14 +78,13 @@ struct ModInt {
   friend ostream& operator<<(ostream& os, const ModInt& that) { return os<<that.val; }
 };
 
-
 // $ cp-batch SumEqualsXor | diff SumEqualsXor.out -
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address SumEqualsXor.cpp && ./a.out
 
 /*
- 
+
  6/9/2019
- 
+
  5:40-6:40 give up
  10:10-11:30 add solution by @tempura_cpp's approach 2^p*3^s
  13:00-14:15 add normal digit dp solution
@@ -97,19 +96,46 @@ struct ModInt {
  https://twitter.com/hamko_intel/status/1137718170024697856
  This was the way that I was looking for.
  What I didn't come up with is 3^(length of suffix) part, which is enumeration of all the subsets.
- 
+
  Normal digit dp
  https://twitter.com/D_A_works/status/1137718215965007874
  https://twitter.com/torus711/status/1137718180904701952
  https://twitter.com/satanic0258/status/1137717004394045442
- 
+
+ 6/1/2020
+
+ 9:34-9:58 solve again by digit dp
+
  */
 
 const int MAX_N=1e6+1;
 string L;
 
-ModInt dp[MAX_N][2];
 void solve() {
+  int N=SZ(L);
+  ModInt res=0;
+  int cnt1=0;
+  REP(i,N) if(L[i]=='1') {
+    res+=ModInt(2).pow(cnt1)*ModInt(3).pow(N-i-1);
+    ++cnt1;
+  }
+  res+=ModInt(2).pow(cnt1);
+  cout<<res<<endl;
+}
+
+ModInt dp[MAX_N][2];
+void solve_digitdp() {
+  int N=SZ(L);
+  dp[0][0]=1;
+  REP(i,N) REP(less,2) {
+    int d=L[i]-'0';
+    int lb=0,hb=!less?d:1;
+    FORE(dd,lb,hb) dp[i+1][less|(dd<d)]+=dp[i][less]*(dd==0?1:2);
+  }
+  cout<<dp[N][0]+dp[N][1]<<endl;
+}
+
+void solve_digitdp_org() {
   ZERO(dp);
   int N=SZ(L);
   dp[0][0]=1;
@@ -118,7 +144,7 @@ void solve() {
       // j=0
       dp[i+1][1]+=dp[i][0];
       dp[i+1][0]+=dp[i][0]*2;
-      
+
       // j=1
       dp[i+1][1]+=dp[i][1]*3;
     } else {
@@ -132,7 +158,7 @@ void solve() {
 }
 
 int cum[MAX_N];
-void solve_combinatorics() {
+void solve_combinatorics_org() {
   int N=SZ(L);
   REP(i,N) cum[i+1]=cum[i]+(L[i]=='1');
   ModInt res;
@@ -148,9 +174,9 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
   cout<<setprecision(12)<<fixed;
-  
+
   cin>>L;
   solve();
-  
+
   return 0;
 }
