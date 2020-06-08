@@ -114,29 +114,62 @@ namespace RollingHash {
     }
   };
 }
-
+vector<int> zalgo(string &S) {
+  int N=S.size();
+  vector<int> Z(N,0);
+  int l=0;
+  for(int i=1; i<N; ++i) {
+    // S[l..r] is current right most prefix-substring
+    int r=l+Z[l],pre=Z[i-l];
+    if (i+pre<r) {
+      Z[i]=pre;
+    } else {
+      int j=max(0, r-i);
+      while(i+j<N&&S[j]==S[i+j]) ++j;
+      Z[i]=j;
+      l=i;
+    }
+  }
+  Z[0]=N;
+  return Z;
+}
 // $ cp-batch WhoSaysAPun | diff WhoSaysAPun.out -
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address WhoSaysAPun.cpp && ./a.out
 
 /*
- 
+
  9/15/2019
- 
+
  5:33-5:49,6:10-6:36 AC
- 
+
  https://img.atcoder.jp/abc141/editorial.pdf
  http://drken1215.hatenablog.com/entry/2019/09/16/014600
- 
+
  https://twitter.com/tempura_cpp/status/1173230007402975232?s=20
  https://twitter.com/drken1215/status/1173230175649071104?s=20
  https://twitter.com/satanic0258/status/1173230218191896576
- 
+
+ 6/8/2020
+
+ 8:57-9:05 Add solution by Z-algorithm
+
  */
 
 int N;
 string S;
 
 void solve() {
+  int res=0;
+  REP(i,N) {
+    string s=S.substr(0,i),t=S.substr(i);
+    string T=t+s;
+    VI ls=zalgo(T);
+    FOR(i,SZ(t),N) SMAX(res,min(SZ(t),ls[i]));
+  }
+  cout<<res<<endl;
+}
+
+void solve_rollinghash() {
   RollingHash::H hash(S);
   auto ok=[&](int len)->bool {
     map<pair<unsigned int,unsigned int>,int> M;
@@ -165,9 +198,9 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
   cout<<setprecision(12)<<fixed;
-  
+
   cin>>N>>S;
   solve();
-  
+
   return 0;
 }
