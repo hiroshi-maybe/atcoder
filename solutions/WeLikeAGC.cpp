@@ -83,14 +83,18 @@ struct ModInt {
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address WeLikeAGC.cpp && ./a.out
 
 /*
- 
+
  5/9/2019
- 
+
  16:28-16:55 AC
- 
+
  https://betrue12.hateblo.jp/entry/2019/03/24/224052
  https://img.atcoder.jp/abc122/editorial.pdf
- 
+
+ 6/19/2020
+
+ 15:10-15:42 solve again
+
  */
 
 const int MAX_N=1e2+1;
@@ -98,12 +102,34 @@ LL A[MAX_N];
 int N;
 
 ModInt dp[MAX_N][4][4][4];
+
+const VV<int> ng={{0,2,1},{2,0,1},{0,1,2}};
+ModInt dp[MAX_N][4][4][4];
+bool ok(int i, int j, int k) {
+  VI a={i,j,k};
+  return count(ALL(ng),a)==0;
+}
+bool ok2(int i, int j, int k) {
+  return !(i==0&&j==2&&k==1);
+}
+void solve() {
+  REP(i,4)REP(j,4)REP(k,4) if(ok(i,j,k)) dp[3][i][j][k]=1;
+  FOR(i,3,N) REP(j,4) REP(k,4) REP(l,4) {
+    REP(m,4) if(ok(k,l,m)&&ok2(j,k,m)&&ok2(j,l,m)) {
+      dp[i+1][k][l][m]+=dp[i][j][k][l];
+    }
+  }
+  ModInt res=0;
+  REP(i,4)REP(j,4)REP(k,4) res+=dp[N][i][j][k];
+  cout<<res<<endl;
+}
+
 bool chk(string s) {
   if(s.substr(0,3)=="AGC") return false;
   if(s.substr(1,3)=="AGC") return false;
   return true;
 }
-void solve() {
+void solve_org() {
   string acg="ACGT";
   REP(i,4)REP(j,4)REP(k,4) {
     string x; x+=acg[i],x+=acg[j],x+=acg[k];
@@ -129,10 +155,10 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
   cout<<setprecision(12)<<fixed;
-  
+
   cin>>N;
   REP(i,N) cin>>A[i];
   solve();
-  
+
   return 0;
 }
