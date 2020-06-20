@@ -49,12 +49,15 @@ typedef tuple< int, int, int > III;
 #define dump4(x,y,z,a) if(TRACE) { cerr << #x << " = " << (x) << ", " << #y << " = " << (y) << ", " << #z << " = " << (z) << ", " << #a << " = " << (a) << endl; }
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
+// $ cp-batch StaticSushi | diff StaticSushi.out -
+// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address StaticSushi.cpp && ./a.out
+
 /*
- 
+
  4/21/2018 ARC096
- 
+
  21:20-22:30 obtained only 300/500 pt
- 
+
  It was obvious that going to one direction and turning at most once is optimal.
  After the turn, obtained calory by going the other direction is independent.
  I just computed single maximal value in each direction. However this is not optimal as seen in sample #2.
@@ -63,11 +66,11 @@ typedef tuple< int, int, int > III;
  The decision of x[r] constrains x[l] because l < r must hold.
  Thus we want to query optimal `l` for position `r` in less than linear time.
  It's easy to query by pre-computing the table with size `N`.
- 
+
  4/22/2018
 
  9:30-10:00, 13:30-13:42 Read editorials and get ACC
- 
+
  Editorials:
   - https://img.atcoder.jp/arc096/editorial.pdf
   - https://www.youtube.com/watch?v=qOG8pkCP7oI
@@ -86,20 +89,57 @@ typedef tuple< int, int, int > III;
 
  Short and simple solution:
   - https://beta.atcoder.jp/contests/arc096/submissions/2391737
- 
+
  Key:
   - Optimal choice of the other side is determined by turning position
   - Optimal choice of the other side can be pre-computed
- 
+
  Summary:
   - I should have figured out that optimal choice of the other side depends on the turning side
   - My first approach to find optimal choice of the other side did not work
    - I did not consider upper-bound of the position (x[l] < x[r] should hold)
    - The upper-bounded position affects optimal choice
- 
+
+ 6/19/2020
+
+ 16:23-17:08 give up and read editorial
+ 19:52-20:43 AC
+
  */
 
+int N;
+LL C;
 LL X[100001],V[100001],Q[100002];
+
+const int MAX_N=1e6+1;
+LL cum[MAX_N];
+LL f() {
+  REP(i,N+1) cum[i+1]=cum[i]+V[i];
+  vector<LL> left(N+1,0);
+  for(int i=N-1; i>=0; --i) {
+    left[i]=max(left[i+1],cum[N]-cum[i]-(C-X[i]));
+  }
+
+  //dumpc(left);
+  LL res=0;
+  REPE(r,N) {
+    LL base=cum[r]-(r==0?0:X[r-1]);
+    SMAX(res,base);
+    SMAX(res, base-(r==0?0:X[r-1])+left[r]);
+  }
+  //dump(res);
+  return res;
+}
+LL solve() {
+  LL res=f();
+  reverse(V,V+N);
+  vector<LL> ys(N);
+  REP(i,N) ys[i]=C-X[N-i-1];
+  REP(i,N)X[i]=ys[i];
+  SMAX(res,f());
+  return res;
+}
+
 LL f(int N, LL C) {
   LL res=0;
   ZERO(Q);
@@ -110,7 +150,7 @@ LL f(int N, LL C) {
     LL vv=cur-x;
     Q[i+1]=max(Q[i],vv); // Q[i] for [0,i)
   }
-  
+
   cur=0;
   for(int i=N; i>=0; --i) {
     LL a=Q[i];
@@ -124,7 +164,7 @@ LL f(int N, LL C) {
   }
   return res;
 }
-LL solve(int N, LL C) {
+LL solve_org(int N, LL C) {
   LL res=0;
   SMAX(res,f(N,C));
   reverse(X,X+N); REP(i,N) X[i]=C-X[i];
@@ -134,14 +174,13 @@ LL solve(int N, LL C) {
 }
 
 int main() {
-  LL N,C;
   cin >> N >> C;
   REP(i,N) {
     LL x,v;
     cin >> x >> v;
     X[i]=x,V[i]=v;
   }
-  cout << solve(N,C) << endl;
+  cout << solve() << endl;
   return 0;
 }
 
@@ -181,10 +220,10 @@ __int128 solve_300(int N, LL C, vector<pair<LL,LL>> &X) {
   __int128 res=0;
   __int128 rmax=right(N,C,X);
   __int128 lmax=left(N,C,X);
-  
+
   if(res<rmax) res=rmax;
   if(res<lmax) res=lmax;
-  
+
 //  dump4(rmax,lmax,maxrighti,maxlefti);
 
   /*
@@ -199,29 +238,29 @@ __int128 solve_300(int N, LL C, vector<pair<LL,LL>> &X) {
     if(a<b) --r;
     else ++l;
   }
-  
+
   l=0,r=N-1;
   lsum=X[0].second,rsum=X[N-1].second,res1=lsum-X[0].first+rsum-2*(C-X[N-1]);
   while(l<r-1) {
     __int128 lsum2=lsum+X[l+1],a=lsum2-X[l+1].first+rsum-2*(C-X[r]);
     __int128 rsum2=rsum+X[r-1],b=rsum-2*X[l].first+rsum2-(C-X[r-1]);
-    
+
     if(res<a) res=a;
     if(res<b) res=b;
     if(a<b) --r;
     else ++l;
   }*/
-  
+
   __int128 lsum=0;
   REP(l,N) {
     __int128 lx=X[l].first,lcal=X[l].second;
     lsum+=lcal;
-    
+
     __int128 rsum=0;
     for(int r=N-1; r>l; --r) {
       __int128 rx=C-X[r].first,rcal=X[r].second;
       rsum+=rcal;
-      
+
       __int128 a=lsum-2*lx+rsum-rx;
       if(a>res) res=a;
       __int128 b=rsum-2*rx+lsum-lx;
