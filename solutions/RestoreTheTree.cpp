@@ -46,18 +46,22 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address RestoreTheTree.cpp && ./a.out
 
 /*
- 
+
  2/4/2019
- 
+
  20:46-21:04 AC
- 
+
  https://img.atcoder.jp/nikkei2019-qual/editorial.pdf
  https://youtu.be/x5x2Xg_gVWY?t=2915
  https://www.hamayanhamayan.com/entry/2019/02/02/002131
  http://kazune-lab.net/contest/2019/01/27/nikkei2019-qual/#d---restore-the-tree
  https://hewla.hatenablog.com/entry/2019/01/27/231121
  https://betrue12.hateblo.jp/entry/2019/01/28/215129
- 
+
+ 6/22/2020
+
+ 21:47-22:01 solve again
+
  */
 
 const int MAX_N=1e6+1;
@@ -70,7 +74,7 @@ void solve() {
   REP(u,N) FORR(v,G[u]) {
     D[v]++;
   }
-  
+
   MINUS(res);
   queue<int> Q;
   REP(u,N) if(D[u]==0) Q.emplace(u);
@@ -89,7 +93,7 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
   cout<<setprecision(12)<<fixed;
-  
+
   cin>>N>>M;
   REP(i,N+M-1) {
     int u,v; cin>>u>>v;
@@ -97,6 +101,6 @@ int main() {
     G[u].push_back(v);
   }
   solve();
-  
+
   return 0;
 }
