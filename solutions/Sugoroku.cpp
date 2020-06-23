@@ -78,7 +78,7 @@ private:
     if(qr<=l||r<=ql) return Inf;
     if(ql<=l&&r<=qr) return A[i];
     int m=(l+r)/2;
-    
+
     return merge(qu(ql,qr,2*i+1,l,m),qu(ql,qr,2*i+2,m,r));
   }
   int calcsize(int N) {
@@ -90,11 +90,11 @@ private:
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address Sugoroku.cpp && ./a.out
 
 /*
- 
+
  11/24/2019
- 
+
  4:54-5:17 AC
- 
+
  https://twitter.com/hanseilimak/status/1198735200571686912
  https://img.atcoder.jp/abc146/editorial.pdf
  https://youtu.be/7IlBVSglZqc?t=8293
@@ -105,15 +105,44 @@ private:
  https://twitter.com/kyopro_friends/status/1198599795184586752
  https://twitter.com/armeria_betrue/status/1198604099396128769?s=20
  https://twitter.com/maspy_stars/status/1198626710599528454
- 
+
+ 6/22/2020
+
+ 22:09-22:48 solve again by greedy simulation
+
  */
 
 //const int MAX_N=1e6+1;
 int N,M;
 string S;
 
-const int Inf=1e8;
+void nope() {
+  cout<<-1<<endl;
+  exit(0);
+}
 void solve() {
+  VI rl;
+  REP(i,N+1) if(S[i]=='1') {
+    if(i==0||S[i-1]=='0') rl.push_back(0);
+    rl.back()+=1;
+  }
+  FORR(l,rl) if(l>=M) nope();
+
+  VI ps={N};
+  while(ps.back()!=0) {
+    int cur=ps.back();
+    int j=-1;
+    REP(i,M) if(cur-i-1>=0&&S[cur-i-1]=='0') j=cur-i-1;
+    ps.push_back(j);
+  }
+  //dumpc(ps);
+  reverse(ALL(ps));
+  REP(i,SZ(ps)-1) cout<<ps[i+1]-ps[i]<<" ";
+  cout<<endl;
+}
+
+const int Inf=1e8;
+void solve_org() {
   VI A(N+1,Inf);
   REPE(i,N) A[i]=S[i]=='1'?Inf:i;
   RMQ<int> rmq(A,Inf);
@@ -138,9 +167,9 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
   cout<<setprecision(12)<<fixed;
-  
+
   cin>>N>>M>>S;
   solve();
-  
+
   return 0;
 }
