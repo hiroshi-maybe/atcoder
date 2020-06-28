@@ -46,44 +46,43 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address DivisionOrSubtraction.cpp && ./a.out
 
 /*
- 
+
  4/30/2020
- 
+
  21:29-22:24 WA
  22:54 AC
- 
+
  https://img.atcoder.jp/abc161/editorial.pdf
  https://youtu.be/q-mrqE2Q7JQ?t=6494
  https://twitter.com/hanseilimak/status/1256103004014440451
- 
+
+ 6/28/2020
+
+ 9:00-9:25 solve again
+
  */
 
 LL N;
 
-LL gcd(LL a, LL b) { return b==0?a:gcd(b,a%b); }
-LL ok(LL k) {
-  if(k<=1) return false;
-  LL n=N;
-  while(n>=k&&n%k==0) n/=k;
-  return n%k==1?k:-1;
+bool ok(LL n, LL k) {
+  while(n%k==0) n/=k;
+  return (n-1)%k==0;
 }
-LL solve() {
-  LL res=0;
+
+int solve() {
+  set<LL> res;
+  LL n=N-1;
+  auto add=[&](LL k) {
+    if(k>=2&&k<=N) res.emplace(k);
+  };
+  for(LL p=1; p*p<=n; ++p) if(n%p==0) {
+    add(p),add(n/p);
+  }
   for(LL p=1; p*p<=N; ++p) if(N%p==0) {
-    LL k=ok(p);
-    if(k>=2) ++res;
-    LL q=N/p;
-    if(p==q) break;
-    k=ok(q);
-    if(k>=2) ++res;
+    if(p!=1&&ok(N,p)) add(p);
+    if(ok(N,N/p)) add(N/p);
   }
-  for(LL k=1; k*k<=N-1; ++k) if((N-1)%k==0) {
-    LL kk=(N-1)/k;
-    if(k>=2) ++res;
-    if(kk!=k&&kk>=2) ++res;
-  }
-//  dumpc(res);
-  return res;
+  return SZ(res);
 }
 
 mt19937 rnd(chrono::steady_clock::now().time_since_epoch().count());
@@ -114,11 +113,11 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
   cout<<setprecision(12)<<fixed;
-  
+
 //  while(true) test();
-  
+
   cin>>N;
   cout<<solve()<<endl;
-  
+
   return 0;
 }
