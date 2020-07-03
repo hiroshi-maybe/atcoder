@@ -50,11 +50,11 @@ typedef tuple< int, int, int > III;
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
 /*
- 
+
  7/30/2018
- 
+
  25:40-25:50 AC
- 
+
  Editorials:
   - https://atcoder.jp/img/arc075/editorial.pdf
   - https://youtu.be/XTW-Q5buWOk?t=1056
@@ -63,16 +63,20 @@ typedef tuple< int, int, int > III;
   - https://kimiyuki.net/writeup/algo/atcoder/arc-075-d/
   - http://htkb-procon.hateblo.jp/entry/2017/06/04/003542
   - https://ei1333.hateblo.jp/entry/2017/06/04/180652
- 
+
  x*B is applied to all the monsters.
  (A-B) can be applied to arbitrary monsters at most `x` times.
  Then decision problem can be solved in O(N).
- 
+
  Larger `x` beats more monsters. Let's go through binary search.
- 
+
  Summary:
-  - decision problem and additional (A-B) damage came up with me quickly 
- 
+  - decision problem and additional (A-B) damage came up with me quickly
+
+ 7/2/2020
+
+ 22:24-22:30 solve again
+
  */
 
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
@@ -103,11 +107,11 @@ LL solve() {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  
+
   cin>>N>>A>>B;
   REP(i,N) cin>>H[i];
-  
+
   cout<<solve()<<endl;
-  
+
   return 0;
 }
