@@ -65,13 +65,17 @@ template<class Iter> void dumpc(Iter begin, Iter end) { if (TRACE) { for(; begin
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address NumberOfAmidakuji.cpp && ./a.out
 
 /*
- 
+
  1/20/2019
- 
+
  16:00-16:56 AC
- 
+
  https://img.atcoder.jp/abc113/editorial.pdf
- 
+
+ 7/4/2020
+
+ 17:02-17:44 solve again
+
  */
 
 const int MOD=1e9+7;
@@ -133,9 +137,9 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
   cout<<setprecision(12)<<fixed;
-  
+
   cin>>H>>W>>K;
   solve();
-  
+
   return 0;
 }
