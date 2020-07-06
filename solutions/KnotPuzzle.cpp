@@ -51,18 +51,22 @@ typedef tuple< int, int, int > III;
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
 /*
- 
+
  8/23/2018
- 
+
  22:05-22:18 analysis
  22:19-22:24 implement and got AC
- 
+
  Editorials:
   - http://agc002.contest.atcoder.jp/data/agc/002/editorial.pdf
   - https://kimiyuki.net/writeup/algo/atcoder/agc-002-c/
   - http://kmjp.hatenablog.jp/entry/2016/08/11/0900
   - http://hamko.hatenadiary.jp/entry/2017/02/10/160200
- 
+
+ 7/6/2020
+
+ 9:09-9:36 solve again
+
  */
 
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
@@ -90,7 +94,7 @@ void solve() {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  
+
   cin>>N>>L;
   REP(i,N) cin>>A[i];
   solve();
