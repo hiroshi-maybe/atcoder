@@ -50,15 +50,15 @@ typedef tuple< int, int, int > III;
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
 /*
- 
+
  7/30/2018
- 
+
  18:00-18:45 pause
  20:40-21:06 TLE
  21:20 give up
- 
+
  24:00-24:33 read editorials and add solution
- 
+
  Editorials:
   - https://atcoder.jp/img/arc083/editorial.pdf
   - https://youtu.be/nCHz87GMdpo?t=1762
@@ -66,7 +66,7 @@ typedef tuple< int, int, int > III;
   - http://potetisensei.hatenablog.com/entry/2018/03/25/234552
   - http://yousei.hateblo.jp/entry/2017/09/17/155918
   - http://kazune-lab.net/contest/2017/09/16/arc083/
- 
+
  Tweets:
   - https://togetter.com/li/1151403
   - https://twitter.com/Darsein/status/909051899856351234
@@ -83,28 +83,28 @@ typedef tuple< int, int, int > III;
   - https://twitter.com/kojingharang/status/909053728036052992
    - greedy failed (TLE)
   - https://twitter.com/LatteMalta/status/909051502991335425
- 
+
  I tried to build graph greedily from edges with smaller weight.
  However O(N^3*lg N) could not beat 2 secs time limit 😞
  I couldn't come up with another approach 😞😞
- 
+
  If graph exists, given matrix should satisfy properties of FW's algorithm:
- 
+
   ∀k, dist[i][k]+dist[k][j]>=dist[i][j]
- 
+
  If this is satisfied, we can remove redundant edges.
 
  If we find some `k` which satisfies dist[i][k]+dist[k][j]=dist[i][j], we can remove edge between `i` and `j`.
  That's possible because dist[i][k]+dist[k][j] is achieving shortest distance.
  We keep removing those edges. Remaining edge achieves minimal distance.
- 
+
  How can I come up with this idea? 🤔
  Possible scenario to reach expected solution:
- 
+
  What are conditions when given matrix is invalid?
  All the pairs shortest paths are computed based on triang inequality for all the intermediate edges.
  If it's violated like dist[i][k]+dist[k][j]<dist[i][j], graph configuration is broken. Return -1.
- 
+
  If it's valid, what are redundant edges?
  Once we made sure graph is correct, we can easily "remove" unnecessary edges.
  If we can find `k` s.t. dist[i][k]+dist[k][j]=dist[i][j], we don't need edge dist[i][j].
@@ -112,7 +112,7 @@ typedef tuple< int, int, int > III;
 
  Key:
   - Triangle inequality
- 
+
  Summary:
   - O(N^3*lg N) is not too bad. However I spent too much time to reach it. I couldn't make another effort to other solution
   - Deep dive into property of Floyd-Warshall.
@@ -120,13 +120,41 @@ typedef tuple< int, int, int > III;
    - Triangle inequality (a+b>c) holds in all the edges when shortest path problem has been solved
   - My reduction skill is shit 👎
   - My analysis skill is shit 👎
- 
+
+  7/7/2020
+
+  21:55-22:20 solve again
+
  */
 
+// $ cp-batch RestoringRoadNetwork | diff RestoringRoadNetwork.out -
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
 const int MAX_V=300+1;
 LL A[MAX_V][MAX_V];
 int V;
+
+LL solve() {
+  bool ok=true;
+  REP(k,V)REP(i,V)REP(j,V) {
+    ok&=(A[i][k]+A[k][j]>=A[i][j]);
+    if(A[i][k]+A[k][j]<A[i][j]) {
+      //dump(i,k,j,A[i][k],A[k][j],A[i][j]);
+    }
+  }
+  if(!ok) {
+    return -1;
+  }
+
+  vector<vector<int>> skip(V,VI(V,0));
+  REP(k,V)REP(i,V)REP(j,V) if(A[i][k]!=0&&A[k][j]!=0&&A[i][k]+A[k][j]==A[i][j]) {
+    skip[i][j]=1;
+    //dump(i,k,j,A[i][k],A[k][j],A[i][j]);
+  }
+  LL res=0;
+  REP(j,V)REP(i,j) if(!skip[i][j]) res+=A[i][j];
+  return res;
+}
+
 // 18:00-18:45 pause
 // 20:40-21:06 TLE
 // 21:20 give up
@@ -165,7 +193,7 @@ LL solve_TLE(vector<tuple<LL,int,int>> S) {
     LL d=dist(u,v);
     if(d<w) return -1;
     if(d==w) continue;
-    
+
     G[u].emplace_back(w,v);
     G[v].emplace_back(w,u);
     res+=w;
@@ -173,7 +201,7 @@ LL solve_TLE(vector<tuple<LL,int,int>> S) {
   return res;
 }
 
-LL solve() {
+LL solve_org() {
   REP(k,V)REP(i,V)REP(j,V) if(A[i][k]+A[k][j]<A[i][j]) return -1;
   LL res=0;
   REP(j,V)REP(i,j) res+=A[i][j];
@@ -182,7 +210,7 @@ LL solve() {
     REP(k,V) if(k!=i&&k!=j&&A[i][k]+A[k][j]==A[i][j]) ok=false;
     if(!ok) res-=A[i][j];
   }
-  
+
 //  REP(j,V)REP(i,j) dump3(i,j,A[i][j]);
   return res;
 }
@@ -190,11 +218,11 @@ LL solve() {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  
+
   cin>>V;
   vector<tuple<LL,int,int>> X;
   REP(i,V)REP(j,V) cin>>A[i][j];
-  
+
   /*
   REP(j,V)REP(i,j) {
     LL d=A[i][j];
