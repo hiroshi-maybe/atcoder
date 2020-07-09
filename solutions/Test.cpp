@@ -76,81 +76,25 @@ struct ModInt {
   bool operator!=(ModInt that) const { return val!=that.val; }
   friend ostream& operator<<(ostream& os, const ModInt& that) { return os<<that.val; }
 };
-LL choose(LL n, LL k) {
-  if(n<k) return 0;
-
-  const int MAX_N = 1e7+1;
-  assert(0<=k&&k<=MAX_N);
-  static LL fact[MAX_N+1],revfact[MAX_N+1],rev[MAX_N+1];
-
-  if(rev[1]==0) {
-    rev[1]=1;
-    for(int i=2;i<=MAX_N;i++) rev[i]=rev[MOD%i]*(MOD-MOD/i)%MOD;
-    fact[0]=1,revfact[0]=1;
-    for(int i=1;i<=MAX_N;i++) {
-      fact[i]=fact[i-1]*i%MOD;
-      revfact[i]=revfact[i-1]*rev[i]%MOD;
-    }
-  }
-  return fact[n]*revfact[n-k]%MOD*revfact[k]%MOD;
-}
-// $ cp-batch Extension | diff Extension.out -
-// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address Extension.cpp && ./a.out
+// $ cp-batch Test | diff Test.out -
+// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address Test.cpp && ./a.out
 
 /*
-
- 6/20/2020
-
- 5:28-6:34
- 7:30 give up
-
- 6/21/2020
-
- 15:30-17:06 read editorials and got AC
-
- https://twitter.com/hanseilimak/status/1274829013555412992
- https://img.atcoder.jp/agc046/editorial.pdf
- https://betrue12.hateblo.jp/entry/2020/06/21/010037
- https://ngtkana.growi.cloud/contest/agc046
-
- https://twitter.com/kyopro_friends/status/1274354018148446209
- https://twitter.com/armeria_betrue/status/1274351290756132870
- https://twitter.com/tsutaj/status/1274354253486673921
- https://twitter.com/tsutaj/status/1274349751727558660
- https://twitter.com/smiken_61/status/1274369874047848448
- https://twitter.com/prd_xxx/status/1274349383803273218
- https://twitter.com/n_vip/status/1274349165288361984
- https://twitter.com/snuke_/status/1274369917983195141
 
  7/8/2020
 
  8:30-10:00 Sample 3 does not pass. Give up.
- 10:03 AC after looking at @betrue12's editorial. One condition was missing...
+ 10:03 AC after looking at editorial. One condition was missing...
 
  https://docs.google.com/document/d/1Yq384PEooRVsmlzB103YMLWwE_JhPN8AbxZagNrF_vY/edit#bookmark=id.ob6z1e427q5
 
  */
-const int MAX_N=3e3+10;
+
+const int MAX_N=3000+10;
 int A,B,C,D;
 
-ModInt dp[MAX_N][MAX_N][2];
-
-// Official editorial solution
+ModInt dp[MAX_N][MAX_N][3][3];
 void solve() {
-  dp[A][B][0]=1;
-  FORE(i,A,C)FORE(j,B,D)REP(k,2) {
-    if(i==A&&j==B) continue;
-    if(k==0) dp[i][j][k]=dp[i][j-1][k]*i+dp[i][j-1][1];
-    if(k==1) dp[i][j][k]=(dp[i-1][j][0]+dp[i-1][j][1])*j;
-  }
-  //dump(dp[2][1][0],dp[2][1][1],dp[1][2][1]);
-  //dump(dp[C][D][0],dp[C][D][1]);
-  ModInt res=dp[C][D][0]+dp[C][D][1];
-  cout<<res<<endl;
-}
-
-void solve_2nd_attempt() {
-  static ModInt dp[MAX_N][MAX_N][3][3];
   dp[A][B][0][0]=1;
   FORE(i,A,C)FORE(j,B,D)REP(k,3)REP(l,3) {
     //if(dp[i][j][k][l]!=0) dump(i,j,k,l,dp[i][j][k][l]);
@@ -165,33 +109,6 @@ void solve_2nd_attempt() {
   }
   ModInt res=0;
   REP(k,3)REP(l,3) res+=dp[C][D][k][l];
-  cout<<res<<endl;
-}
-
-void solve_wrong() {
-  ModInt res=0;
-  int AA=C-A,BB=D-B;
-  dump(AA,BB);
-  REPE(x,AA) REPE(y,BB) {
-    ModInt a=ModInt(B).pow(x)*choose(AA,x);
-    ModInt b=ModInt(A).pow(y)*choose(BB,y);
-    ModInt c=ModInt(choose(AA*BB,AA+BB-x-y));
-    dump(x,y,a,b,c,a*b*c);
-    res+=a*b*c;
-  }
-  cout<<res<<endl;
-}
-
-void solve_org() {
-  dp[A][B][1]=1;
-  FORE(i,A,C)FORE(j,B,D)REP(tor,2) {
-    if(i==A&&j==B) continue;
-    if(tor==1)dp[i][j][tor]=dp[i][j-1][1]*i+dp[i][j-1][0];
-    if(tor==0)dp[i][j][tor]=(dp[i-1][j][0]+dp[i-1][j][1])*j;
-  }
-  //dump(dp[2][1][0],dp[2][1][1],dp[1][2][1]);
-  //dump(dp[C][D][0],dp[C][D][1]);
-  ModInt res=dp[C][D][0]+dp[C][D][1];
   cout<<res<<endl;
 }
 
