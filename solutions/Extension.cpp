@@ -122,10 +122,35 @@ LL choose(LL n, LL k) {
  https://twitter.com/n_vip/status/1274349165288361984
  https://twitter.com/snuke_/status/1274369917983195141
 
- */
+ 7/8/2020
 
+ 8:30-10:00 Sample 3 does not pass. Give up.
+ 10:03 AC after looking at @betrue12's editorial. One condition was missing...
+
+ https://docs.google.com/document/d/1Yq384PEooRVsmlzB103YMLWwE_JhPN8AbxZagNrF_vY/edit#bookmark=id.ob6z1e427q5
+
+ */
 const int MAX_N=3e3+10;
 int A,B,C,D;
+
+void solve() {
+  static ModInt dp[MAX_N][MAX_N][3][3];
+  dp[A][B][0][0]=1;
+  FORE(i,A,C)FORE(j,B,D)REP(k,3)REP(l,3) {
+    //if(dp[i][j][k][l]!=0) dump(i,j,k,l,dp[i][j][k][l]);
+    // to right
+    dp[i][j+1][min(2,k+1)][1]+=dp[i][j][k][l];
+    dp[i][j+1][k][1]+=dp[i][j][k][l]*(i-1);
+
+    // to up
+    // ||j==B was missing....
+    if(l!=1||j==B) dp[i+1][j][1][l]+=dp[i][j][k][l]*(j-1);
+    dp[i+1][j][1][min(2,l+1)]+=dp[i][j][k][l];
+  }
+  ModInt res=0;
+  REP(k,3)REP(l,3) res+=dp[C][D][k][l];
+  cout<<res<<endl;
+}
 
 void solve_wrong() {
   ModInt res=0;
@@ -142,7 +167,7 @@ void solve_wrong() {
 }
 
 ModInt dp[MAX_N][MAX_N][2];
-void solve() {
+void solve_org() {
   dp[A][B][1]=1;
   FORE(i,A,C)FORE(j,B,D)REP(tor,2) {
     if(i==A&&j==B) continue;
