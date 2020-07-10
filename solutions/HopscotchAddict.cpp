@@ -46,24 +46,51 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address HopscotchAddict.cpp && ./a.out
 
 /*
- 
+
  6/29/2019
- 
+
  5:45-6:02 AC
- 
+
  https://img.atcoder.jp/abc132/editorial.pdf
  https://kenkoooo.hatenablog.com/entry/2019/06/29/224711
  http://kmjp.hatenablog.jp/entry/2019/06/29/1030
- 
+
+ 7/10/2020
+
+ 9:38-9:52 solve again
+
  */
 
 const int MAX_N=1e5+1;
 VI G[MAX_N];
 int N,M,S,T;
 
+void solve() {
+  const int Inf=1e7;
+  VV<int> D(N,VI(3,Inf));
+  queue<II> Q;
+  Q.emplace(S,0),D[S][0]=0;
+  while(SZ(Q)) {
+    int u,step; tie(u,step)=Q.front(),Q.pop();
+    int ss=(step+1)%3;
+    FORR(v,G[u]) {
+      int dd=D[u][step]+1;
+      if(dd<D[v][ss]) {
+        Q.emplace(v,ss);
+        D[v][ss]=dd;
+      }
+    }
+  }
+
+  if(D[T][0]!=Inf) assert(D[T][0]%3==0);
+  int res=D[T][0]/3;
+  if(res==Inf/3) res=-1;
+  cout<<res<<endl;
+}
+
 const LL Inf=1e10;
 LL D[MAX_N][3];
-void solve() {
+void solve_org() {
   REP(i,N)REP(j,3)D[i][j]=Inf;
   queue<tuple<long long,int,int>> Q; Q.emplace(0,S,0); D[S][0]=0;
   while(Q.size()>0) {
@@ -91,7 +118,7 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
   cout<<setprecision(12)<<fixed;
-  
+
   cin>>N>>M;
   REP(i,M) {
     int u,v; cin>>u>>v;
@@ -101,6 +128,6 @@ int main() {
   cin>>S>>T;
   --S,--T;
   solve();
-  
+
   return 0;
 }
