@@ -29,6 +29,7 @@ typedef unordered_map < int, int > MAPII;
 typedef unordered_set < int > SETI;
 typedef pair< int , int > II;
 typedef tuple< int, int, int > III;
+template<class T> using VV=vector<vector<T>>;
 // repetition
 #define FORE(i,a,b) for(int i=(a);i<=(b);++i)
 #define REPE(i,n)  for(int i=0;i<=(n);++i)
@@ -51,13 +52,13 @@ typedef tuple< int, int, int > III;
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
 /*
- 
+
  8/11/2018
- 
+
  16:40-16:50 analysis
  16:51-16:57 implement
  16:58 bug fix of RE (array size)
- 
+
  Editorials:
   - https://atcoder.jp/img/abc051/editorial.pdf
   - https://youtu.be/BiQNjJohMMI?t=2655
@@ -66,17 +67,45 @@ typedef tuple< int, int, int > III;
   - https://kimiyuki.net/writeup/algo/atcoder/abc-051-d/
   - http://ukuku09.hatenablog.com/entry/2017/02/17/013053
   - https://babcs2035.hateblo.jp/entry/2018/06/17/220844
- 
+
+
+ 7/14/2020 23:25-23:36 pause
+ 7/15/2020 9:20-9:34 AC
+
  */
 
-// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
+// $ cp-batch CandidatesOfNoShortestPaths | diff CandidatesOfNoShortestPaths.out -
 const int MAX_N=1e2+1;
 const int MAX_M=1e3+1;
 int N,M;
 int mx[MAX_N][MAX_N];
 int A[MAX_M],B[MAX_M],W[MAX_M];
 const int Inf=1e7;
+
 void solve() {
+  VV<int> mx(N,VI(N,Inf));
+  VV<int> es(N,VI(N,-1));
+  REP(i,N) mx[i][i]=0;
+  REP(i,M) {
+    int u=A[i],v=B[i],w=W[i];
+    mx[u][v]=mx[v][u]=w;
+    es[u][v]=es[v][u]=0;
+  }
+
+  REP(k,N)REP(i,N)REP(j,N) {
+    int d=mx[i][k]+mx[k][j];
+    if(d<mx[i][j]) {
+      mx[i][j]=d;
+      if(es[i][j]==0) es[i][j]=1;
+    }
+  }
+
+  int res=0;
+  REP(j,N)REP(i,j) res+=(es[i][j]==1);
+  cout<<res<<endl;
+}
+
+void solve_org() {
   ZERO(mx);
   REP(i,N)REP(j,N)if(i!=j)mx[i][j]=Inf;
   REP(i,M)mx[A[i]][B[i]]=mx[B[i]][A[i]]=W[i];
@@ -96,7 +125,7 @@ void solve() {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  
+
   cin>>N>>M;
   REP(i,M) {
     cin>>A[i]>>B[i]>>W[i];
