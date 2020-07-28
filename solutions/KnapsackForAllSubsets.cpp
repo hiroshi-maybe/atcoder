@@ -97,14 +97,29 @@ struct ModInt {
  https://twitter.com/tsutaj/status/1267088565302726658
  https://maspypy.com/atcoder-%e5%8f%82%e5%8a%a0%e6%84%9f%e6%83%b3-2020-05-31abc-169
 
+ 7/28/2020
+
+ 9:33-10:20 solve again
+
  */
 
 const int MAX_N=3000+1;
 int A[MAX_N];
 int N,S;
 
-ModInt dp[MAX_N][MAX_N];
 void solve() {
+  VV<ModInt> dp(N+1,vector<ModInt>(S+1,0));
+  dp[0][0]=1;
+  REP(i,N) REPE(s,S) {
+    //dump(i,s,dp[i][s]);
+    dp[i+1][s]+=dp[i][s]*2;
+    if(s+A[i]<=S) dp[i+1][s+A[i]]+=dp[i][s];
+  }
+  cout<<dp[N][S]<<endl;
+}
+
+ModInt dp[MAX_N][MAX_N];
+void solve_org() {
   dp[0][0]=ModInt(2).pow(N);
   REP(i,N)REPE(val,S) {
     if(val+A[i]<=S) dp[i+1][val+A[i]]+=(dp[i][val])/2;
