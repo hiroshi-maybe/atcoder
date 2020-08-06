@@ -51,15 +51,15 @@ typedef tuple< int, int, int > III;
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
 /*
- 
+
  7/29/2018
- 
+
  22:55-23:10, 24:25-24:36 AC
- 
+
  Editorials:
   - https://img.atcoder.jp/arc085/editorial.pdf
   - http://hamayanhamayan.hatenablog.jp/entry/2017/11/11/225532
- 
+
  Tweets:
   - https://togetter.com/li/1170503
   - dp
@@ -80,43 +80,48 @@ typedef tuple< int, int, int > III;
    - https://twitter.com/tatuyan_edson/status/929347292171190272
    - https://twitter.com/DEGwer3456/status/929347707642175488
    - https://twitter.com/u2xr_/status/929348046093029381
- 
+
  http://nozomi.2ch.sc/test/read.cgi/prog/1505047495/
- 
+
  698 ：仕様書無しさん：2017/11/12(日) 00:51:36.26 .net
  >>694
  Yに選択権を与えると、Yはどんな場合でも「残り1枚になるまでとって、スコアをabs(a[N-1]-a[N])にする」という選択ができる。
  Yは最適に動くから、スコアは絶対にabs(a[N-1]-a[N])以下になる。
  だから、Xがもし全部取らないとしたら、1枚残してとってスコアをabs(a[N-1]-a[N])にするのが最適。
- 
+
  699 ：仕様書無しさん：2017/11/12(日) 00:51:38.64 .net
  >>694
  Yさんに手番を回すと |a_{N-1}-a_N| を達成できる権利がいつでもあるんだ
  ということは、Xさんが |a_{N-1}-a_N| より大きい点数を取ろうと画策して N-1 より前の数字で止めたとしても、
  Yさんにはそれを阻むことができるので意味がない、ということだね
- 
+
  --
- 
+
  X is the first person to make a choice. Now X has three options:
  1. take all              => |A[N-1]-W|
  2. take all but the last => |A[N-1]-A[N-2]|
  3. take before A[N-2]
- 
+
  If X takes #3, Y can select |A[N-1]-A[N-2]|.
  Y chooses optimally. Result score of Y's choice should be at most |A[N-1]-A[N-2]|.
  If |A[N-1]-A[N-2]| is smallest, Y chooses it.
  Otherwise, Y may choose different one.
- 
+
  However X can block it by taking choice #1 or #2.
  X behaves optimally too. max { |A[N-1]-W|, |A[N-1]-A[N-2]| } is the result if N>1.
- 
+
  Summary:
   - I solved by dp
   - O(1) solution is so smart 😳
   - If dp did not work, I would have tried deeper analysis
- 
+
+ 8/5/2020
+
+ 21:03-21:24 solve by dp again
+
  */
 
+// $ cp-batch ABS | diff ABS.out -
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
 const int MAX_N=2000+1;
 int N;
@@ -124,24 +129,47 @@ LL Z,W;
 LL A[MAX_N];
 LL memo[MAX_N][2];
 
-LL f(int s, int p) {
+LL f(int p, int t) {
+  LL &res=memo[p][t];
+  if(res>=0) return res;
+  if(t==0) {
+    LL op=p==0?W:A[p-1];
+    res=abs(A[N-1]-op);
+    FOR(i,p+1,N) {
+      SMAX(res,f(i,1));
+    }
+  } else {
+    LL op=p==0?Z:A[p-1];
+    res=abs(A[N-1]-op);
+    /*
+    if(p==2&&t==1) {
+      dump(op,A[N-1],res);
+    }*/
+    FOR(i,p+1,N) {
+      SMIN(res,f(i,0));
+    }
+  }
+  return res;
+}
+
+LL f_org(int s, int p) {
   LL &res=memo[s][p];
   if(res>=0) return res;
   int s2=s==0?W:A[s-1];
   res=abs(A[N-1]-s2);
   FOR(i,s,N-1) {
-    if(p==0) SMAX(res,f(i+1,p^1));
-    else SMIN(res,f(i+1,p^1));
+    if(p==0) SMAX(res,f_org(i+1,p^1));
+    else SMIN(res,f_org(i+1,p^1));
   }
   return res;
 }
-void solve_org() {
+void solve() {
   MINUS(memo);
   LL res=f(0,0);
   cout<<res<<endl;
 }
 
-void solve() {
+void solve_greedy() {
   LL res=abs(A[N-1]-W);
   if(N>1) SMAX(res,abs(A[N-1]-A[N-2]));
   cout<<res<<endl;
@@ -150,7 +178,7 @@ void solve() {
 int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  
+
   cin>>N>>Z>>W;
   REP(i,N) cin>>A[i];
   solve();
