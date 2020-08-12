@@ -49,19 +49,20 @@ typedef tuple< int, int, int > III;
 #define dump3(x,y,z) if(TRACE) { cerr << #x << " = " << (x) << ", " << #y << " = " << (y) << ", " << #z << " = " << (z) << endl; }
 #define dump4(x,y,z,a) if(TRACE) { cerr << #x << " = " << (x) << ", " << #y << " = " << (y) << ", " << #z << " = " << (z) << ", " << #a << " = " << (a) << endl; }
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
-
+// $ cp-batch ConstructSequences | diff ConstructSequences.out -
+// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address ConstructSequences.cpp && ./a.out
 /*
- 
+
  6/11/2018
- 
+
  14:35-15:15 give up
  15:30-16:00 read editorials
  18:45-19:04 pause
- 
+
  6/12/2018
- 
+
  11:00-11:44 got AC
- 
+
  Editorials:
   - https://youtu.be/6ZP8JyGsQBs?t=1094
   - http://agc007.contest.atcoder.jp/data/agc/007/editorial.pdf
@@ -70,24 +71,47 @@ typedef tuple< int, int, int > III;
   - https://kimiyuki.net/writeup/algo/atcoder/agc-007-b/
 
  Below gives baseline A[P[i-1]]+B[P[i-1]]=A[P[i]]+B[P[i]]=A[P[i+1]]+B[P[i+1]]=...
- 
+
  A:     a,       a+x,     a+2*x, .. , a+N*x
  B: a+N*x, a+(N-1)*x, a+(N-2)*x, .. ,     a
  ---------------------------------------------
   2*a+N*x,   2*a+N*x,   2*a+N*x, .. , 2*a+N*x
- 
+
  Summary:
   - bucket or inversion. I couldn't figure out => bucket
   - make simple sequence which satisfies part of conditions. Modify the sequence to satisfy the condition
- 
+
+ 8/11/2020
+
+ 22:02-22:45 solve again
+
  */
 
-// $ g++ -std=c++11 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
 // 14:35-15:15 give up
 const int MAX_N=2e4+1;
 int N;
 LL P[MAX_N];
 LL A[MAX_N],B[MAX_N];
+
+void solve() {
+  VI A(N),B(N);
+  REP(i,N) A[i]=(i+1)*N,B[i]=(N-i)*N;
+  REP(i,N) A[P[i]-1]+=i;
+  REP(i,N) cout<<A[i]<<" \n"[i==N-1];
+  REP(i,N) cout<<B[i]<<" \n"[i==N-1];
+}
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(0);
+  cout<<setprecision(12)<<fixed;
+
+  cin>>N;
+  REP(i,N) cin>>P[i];
+  solve();
+
+  return 0;
+}
 
 LL BU=MAX_N+10;
 void test() {
@@ -102,7 +126,7 @@ void test() {
   }
 }
 
-void solve() {
+void solve_v1() {
   REP(i,N) A[i]=i*BU+1,B[N-i-1]=i*BU+1;
   REP(i,N) A[P[i]]+=i;
   test();
@@ -110,10 +134,10 @@ void solve() {
   REP(i,N) cout<<B[i]<<(i==(N-1)?"\n":" ");
 }
 
-int main() {
+int main_v1() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  
+
   cin>>N;
   REP(i,N) {
     int x;
@@ -122,7 +146,7 @@ int main() {
     //P[x]=i;
     P[i]=x;
   }
-    
-  solve();
+
+  solve_v1();
   return 0;
 }
