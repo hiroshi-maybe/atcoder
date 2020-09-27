@@ -144,6 +144,14 @@ struct ModInt {
  https://tiramistercp.hatenablog.com/entry/abl-e
  https://www.youtube.com/watch?v=D0Op33UL_cA&t=4755s
 
+ https://twitter.com/satanic0258/status/1309850617104359425
+ https://twitter.com/ngtkana/status/1309850244809551874
+ https://twitter.com/tempura_cpp/status/1309850245920993280
+ https://twitter.com/tanakh/status/1309853617214517249
+ https://twitter.com/laycrs/status/1309852798935203840
+ https://twitter.com/ei1333/status/1309852900798029825
+ https://twitter.com/kyopro_friends/status/1309855790958743552
+
  */
 
 const ModInt inv9=ModInt(1)/9;
