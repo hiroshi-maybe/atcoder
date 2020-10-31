@@ -51,12 +51,12 @@ typedef tuple< int, int, int > III;
 #define dumpAR(ar) if(TRACE) { FORR(x,(ar)) { cerr << x << ','; } cerr << endl; }
 
 /*
- 
+
  8/16/2018
- 
+
  10:55-11:15 analysis
  11:16-11:33 implement, submit and got AC
- 
+
  Editorials:
   - https://img.atcoder.jp/soundhound2018-summer-qual/editorial.pdf
   - http://betrue12.hateblo.jp/entry/2018/07/08/122013
@@ -66,20 +66,73 @@ typedef tuple< int, int, int > III;
   - https://kimiyuki.net/writeup/algo/atcoder/soundhound2018-summer-qual-d/
   - http://d.hatena.ne.jp/merom686/20180708/1531024153
   - http://tancahn2380.hatenablog.com/entry/2018/07/13/160133
- 
+
+ 10/31/2020
+
+ solve again
+
  */
 
-// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG x.cpp && ./a.out
-const int MAX_N=1e5+1;
+// $ cp-batch SavingSnuuk | diff SavingSnuuk.out -
+// $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address SavingSnuuk.cpp && ./a.out
+
+const int MAX_N=1e6+1;
 int N,M,S,T;
-//LL A[MAX_N];
+
+vector<II> G[MAX_N];
+using Edge=pair<long long, int>;
+const LL Inf=1e18;
+
+vector<LL> dijkstra(int V, int st) {
+  vector<LL> D(V,Inf);
+  priority_queue<Edge,vector<Edge>,greater<Edge>> Q; Q.emplace(0,st); D[st]=0;
+  while(Q.size()>0) {
+    long long d; int u;
+    tie(d,u)=Q.top(),Q.pop();
+    if(d!=D[u]) continue;
+    for(auto p : G[u]) {
+      long long w; int v; tie(w,v)=p;
+      if(d+w<D[v]) D[v]=d+w,Q.emplace(d+w,v);
+    }
+  }
+  return D;
+}
+
+void solve() {
+  vector<LL> d1=dijkstra(2*N, S),d2=dijkstra(2*N, T+N);
+  vector<LL> res(N+1,Inf);
+  for(int i=N-1; i>=0; --i) {
+    SMIN(res[i],res[i+1]);
+    LL ans=d1[i]+d2[i+N];
+    SMIN(res[i],ans);
+  }
+  REP(i,N) cout<<(LL)1e15-res[i]<<endl;
+}
+
+int main() {
+  ios_base::sync_with_stdio(false);
+  cin.tie(0);
+  cout<<setprecision(12)<<fixed;
+
+  cin>>N>>M>>S>>T; --S,--T;
+  REP(i,M) {
+    int u,v; LL a,b; cin>>u>>v>>a>>b;
+    --u,--v;
+    G[u].emplace_back(a,v),G[v].emplace_back(a,u);
+    G[u+N].emplace_back(b,v+N),G[v+N].emplace_back(b,u+N);
+  }
+  solve();
+
+  return 0;
+}
+
 vector<LL> W[2][MAX_N];
 vector<int> E[MAX_N];
 
-const long long Inf=1e17;
+//const long long Inf=1e17;
 const int MAX_V=MAX_N;
 long long D[2][MAX_V];
-void dijkstra(int V, int st, int cur) {
+void dijkstra_org(int V, int st, int cur) {
   for(int i=0; i<V; ++i) D[cur][i]=Inf;
   set<pair<long long,int>> Q; Q.emplace(0,st); D[cur][st]=0;
   while(Q.size()>0) {
@@ -99,8 +152,8 @@ void dijkstra(int V, int st, int cur) {
 //  REP(i,V) dump2(i,D[cur][i]);
 }
 
-void solve() {
-  dijkstra(N,S,0),dijkstra(N,T,1);
+void solve_org() {
+  dijkstra_org(N,S,0),dijkstra_org(N,T,1);
   priority_queue<pair<LL,int>, vector<pair<LL,int>>, greater<pair<LL,int>>> Q;
   REP(u,N) {
     LL x=D[0][u]+D[1][u];
@@ -115,10 +168,10 @@ void solve() {
   }
 }
 
-int main() {
+int main_org() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
-  
+
   cin>>N>>M>>S>>T;
   --S,--T;
   REP(i,M) {
@@ -128,6 +181,6 @@ int main() {
     W[0][u].push_back(a),W[0][v].push_back(a);
     W[1][u].push_back(b),W[1][v].push_back(b);
   }
-  solve();
+  solve_org();
   return 0;
 }
