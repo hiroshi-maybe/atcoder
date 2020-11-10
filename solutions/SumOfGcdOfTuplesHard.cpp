@@ -82,16 +82,36 @@ struct ModInt {
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address SumOfGcdOfTuplesHard.cpp && ./a.out
 
 /*
- 
- 4/12/2020
- 
- 5:25-6:24 AC
- 
- https://img.atcoder.jp/abc162/editorial.pdf
- 
- */
 
+ 4/12/2020
+
+ 5:25-6:24 AC
+
+ https://img.atcoder.jp/abc162/editorial.pdf
+
+ 11/10/2020
+
+ solve again
+
+ */
+const int MAX_N=1e6;
 int N,K;
+
+ModInt dp[MAX_N];
+void solve() {
+  for(int x=K; x>=1; --x) {
+    int cnt=K/x;
+    ModInt a=ModInt(cnt).pow(N);
+    FORE(c,2,cnt) {
+      a-=dp[c*x];
+    }
+    dp[x]=a;
+  }
+
+  ModInt res=0;
+  FORE(x,1,K) res+=dp[x]*x;
+  cout<<res<<endl;
+}
 
 LL gcd(LL a, LL b) { return b==0?a:gcd(b,a%b); }
 vector<LL> divisors(LL N) {
@@ -104,7 +124,7 @@ vector<LL> divisors(LL N) {
   sort(res.begin(),res.end());
   return res;
 }
-void solve() {
+void solve_org() {
   vector<LL> ds=divisors(K);
   reverse(ALL(ds));
   ModInt res=0;
@@ -142,7 +162,7 @@ int main() {
   ios_base::sync_with_stdio(false);
   cin.tie(0);
   cout<<setprecision(12)<<fixed;
-  
+
   /*
   int res=0;
   map<LL,int> cnt;
@@ -152,9 +172,9 @@ int main() {
   }
   dumpc(cnt);
   dump(res);*/
-  
+
   cin>>N>>K;
   solve();
-  
+
   return 0;
 }
