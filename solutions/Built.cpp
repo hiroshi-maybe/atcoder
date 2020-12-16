@@ -56,6 +56,10 @@ typedef tuple< int, int, int > III;
 
  10:54-11:11 solve again
 
+ 12/16/2020
+
+ 20:06-20:17 solve again
+
  */
 
 // $ cp-batch Built | diff Built.out -
@@ -91,37 +95,22 @@ int XX[MAX_N],YY[MAX_N];
 int N;
 
 void solve() {
-  vector<II> xs(N),ys(N);
-  REP(i,N) xs[i]={XX[i],i},ys[i]={YY[i],i};
+  vector<II> xs,ys;
+  REP(i,N) xs.emplace_back(XX[i],i),ys.emplace_back(YY[i],i);
   sort(ALL(xs)),sort(ALL(ys));
-  vector<III> as,bs;
-  REP(i,N-1) {
-    auto a=xs[i],b=xs[i+1];
-    int dx=abs(a.first-b.first),u=a.second,v=b.second;
-    as.emplace_back(dx,u,v);
-  }
-  REP(i,N-1) {
-    auto a=ys[i],b=ys[i+1];
-    int dy=abs(a.first-b.first),u=a.second,v=b.second;
-    bs.emplace_back(dy,u,v);
-  }
-  sort(ALL(as)),sort(ALL(bs)),reverse(ALL(as)),reverse(ALL(bs));
-
-  LL res=0;
   UF uf(N);
-  const LL Inf=1e18;
-  while(uf.G>1) {
-    LL acost=Inf,bcost=Inf;
-    if(SZ(as)) acost=get<0>(as.back());
-    if(SZ(bs)) bcost=get<0>(bs.back());
-    if(acost<bcost) {
-      LL c; int u,v; tie(c,u,v)=as.back(); as.pop_back();
-      if(!uf.sameset(u,v)) res+=c,uf.unite(u,v);
-    } else {
-      LL c; int u,v; tie(c,u,v)=bs.back(); bs.pop_back();
-      if(!uf.sameset(u,v)) res+=c,uf.unite(u,v);
-    }
+  vector<III> difs;
+  REP(i,N-1) {
+    difs.emplace_back(xs[i+1].first-xs[i].first,xs[i].second,xs[i+1].second);
+    difs.emplace_back(ys[i+1].first-ys[i].first,ys[i].second,ys[i+1].second);
   }
+  sort(ALL(difs));
+  LL res=0;
+  for(auto & [d,i,j] : difs) {
+    if(!uf.sameset(i,j)) res+=d,uf.unite(i,j);
+  }
+
+  assert(uf.G==1);
   cout<<res<<endl;
 }
 
