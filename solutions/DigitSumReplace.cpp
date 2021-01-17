@@ -46,17 +46,21 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
 // $ g++ -std=c++14 -Wall -O2 -D_GLIBCXX_DEBUG -fsanitize=address DigitSumReplace.cpp && ./a.out
 
 /*
- 
+
  11/23/2019
- 
+
  4:49-5:49 AC
- 
+
  https://img.atcoder.jp/ddcc2020-qual/editorial.pdf
  https://youtu.be/BssyLgQvdcY?t=943
  https://twitter.com/kyopro_friends/status/1198239025011642369?s=20
  https://twitter.com/hanseilimak/status/1198343148973391873
  https://twitter.com/tempura_cpp/status/1198236303281672193?s=20
- 
+
+ 1/17/2021
+
+ 9:16-10:22 Solve again. I didn't notice invariants of digit sum and number of digits :(
+
  */
 
 const int MAX_N=1e6+1;
@@ -64,7 +68,39 @@ int D[MAX_N];
 LL C[MAX_N];
 int N;
 
+LL res=0;
+LL merge(LL d1, LL d2, LL cnt) {
+  assert(d1<10);
+  assert(d2<10);
+  LL d=d1+d2;
+  res+=cnt;
+  if(d>9) res+=cnt;
+  return d/10+d%10;
+}
+LL f(LL d, LL cnt) {
+  if(cnt==1) return d;
+  LL c2=cnt/2;
+  LL d2=merge(d,d,c2);
+  assert(d2<10);
+  d2=f(d2,c2);
+  if(cnt%2==1) d2=merge(d2,d,1);
+  assert(d2<10);
+  return d2;
+}
+
 void solve() {
+  LL curd=0;
+  REP(i,N) {
+    LL d=f(D[i],C[i]);
+    //dump(i,curd,d,res);
+    curd=merge(curd,d,i!=0);
+    //dump(i,curd,d,res);
+    assert(curd<10);
+  }
+  cout<<res<<endl;
+}
+
+void solve_org() {
   LL sum=0;
   REP(i,N) sum+=C[i]*D[i];
   LL D=accumulate(C,C+N,0LL);
@@ -114,10 +150,10 @@ int main() {
     int res,sum,D,n; tie(res,sum,D,n)=Y[i];
     dump(res,D,sum,n);
   }*/
-  
+
   cin>>N;
   REP(i,N) cin>>D[i]>>C[i];
   solve();
-  
+
   return 0;
 }
