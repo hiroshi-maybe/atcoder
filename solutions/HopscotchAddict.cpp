@@ -59,6 +59,10 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
 
  9:38-9:52 solve again
 
+ 1/11/2021
+
+ 10:50-11:01 solve again
+
  */
 
 const int MAX_N=1e5+1;
@@ -66,6 +70,30 @@ VI G[MAX_N];
 int N,M,S,T;
 
 void solve() {
+  const int Inf=1e8;
+  VV<int> D(N,VI(3,Inf));
+  REP(i,N)REP(j,3)D[i][j]=Inf;
+  queue<II> Q;
+  Q.emplace(S,0),D[S][0]=0;
+  while(SZ(Q)) {
+    auto [u,p]=Q.front(); Q.pop();
+    int d=D[u][p];
+    FORR(v,G[u]) {
+      int pp=(p+1)%3;
+      if(D[v][pp]>d+1) {
+        D[v][pp]=d+1,Q.emplace(v,pp);
+        //dump(v,pp,D[v][pp]);
+      }
+    }
+  }
+
+  int res=D[T][0];
+  if(res==Inf) res=-1;
+  else res/=3;
+  cout<<res<<endl;
+}
+
+void solve_v2() {
   const int Inf=1e7;
   VV<int> D(N,VI(3,Inf));
   queue<II> Q;
