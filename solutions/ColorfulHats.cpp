@@ -59,6 +59,11 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
  https://img.atcoder.jp/agc016/editorial.pdf
  https://youtu.be/kdQtQSgIYPI?t=1347
 
+ 1/24/2021
+
+ 22:02-22:49 WA on test case 13
+ 23:34 AC
+
  */
 
 const int MAX_N=1e6+1;
@@ -66,6 +71,15 @@ int A[MAX_N];
 int N;
 
 bool solve() {
+  int maxa=*max_element(A,A+N),mina=*min_element(A,A+N);
+  if(maxa==mina) return maxa==N-1||2*maxa<=N;
+  if(maxa-mina>1) return false;
+  int cntmina=count(A,A+N,mina);
+  //dump(maxa,mina,cntmina,N,(maxa-cntmina)*2,N-cntmina);
+  return (maxa-cntmina)>0&&(maxa-cntmina)*2<=(N-cntmina);
+}
+
+bool solve_v1() {
   sort(A,A+N);
   VI as(A,A+N);
   as.erase(unique(as.begin(),as.end()), as.end());
