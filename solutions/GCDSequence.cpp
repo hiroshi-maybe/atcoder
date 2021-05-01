@@ -55,6 +55,12 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
 
  22:30-23:00 give up
 
+ 5/1/2021
+
+ 24:10-25:35 read editorial and got AC
+
+ https://img.atcoder.jp/agc022/editorial.pdf
+ https://docs.google.com/document/d/1Yq384PEooRVsmlzB103YMLWwE_JhPN8AbxZagNrF_vY/edit#bookmark=id.1ctw8bp5qwib
 
  */
 
@@ -73,8 +79,53 @@ vector<int> sieve(int N) {
 int N;
 
 void solve() {
-  VI ps=sieve(30000);
-  dump(SZ(ps));
+  //VI ps=sieve(30000);
+  //dump(SZ(ps));
+  VI res;
+  if(N==3) {
+    res={2,5,63};
+  } else if(N==4) {
+    res={2,5,20,63};
+  } else if(N==5) {
+    res={2,5,20,30,63};
+  } else {
+    VV<int> xs(6);
+    FORE(n,2,3e4) if(n%6==0||n%6==2||n%6==3||n%6==4) {
+      xs[n%6].push_back(n);
+    }
+    REP(i,6) reverse(ALL(xs[i]));
+    int sum=0,yi=0;
+    VI ys={2,3,4,0};
+    while(SZ(res)<N) {
+      int y=ys[yi%4]; yi+=1;
+      sum+=xs[y].back();
+      res.push_back(xs[y].back()), xs[y].pop_back();
+    }
+    //dump(sum%6);
+    if(sum%6==2) {
+      VI temp;
+      while(res.back()%6!=2) temp.push_back(res.back()), res.pop_back();
+      res.pop_back();
+      FORR(a,temp) res.push_back(a);
+      res.push_back(xs[0].back());
+    } else if(sum%6==3) {
+      VI temp;
+      while(res.back()%6!=3) temp.push_back(res.back()), res.pop_back();
+      res.pop_back();
+      FORR(a,temp) res.push_back(a);
+      res.push_back(xs[0].back());
+    } else if(sum%6==5) {
+      VI temp;
+      while(res.back()%6!=3) temp.push_back(res.back()), res.pop_back();
+      res.pop_back();
+      FORR(a,temp) res.push_back(a);
+      res.push_back(xs[4].back());
+    } else {
+      assert(sum%6==0);
+    }
+  }
+  FORR(a,res) cout<<a<<" ";
+  cout<<endl;
 }
 
 int main() {
