@@ -51,12 +51,37 @@ template<typename S, typename T> std::ostream& operator<<(std::ostream& _os, con
 
  12:14-12:17 AC
 
+ 8/22/2021
+
+ 14:20-14:35 Add solution with backtracking
+
  */
 
 int N;
 string S;
 
+set<string> res;
+void dfs(string pref, string suf) {
+  // dump(pref,suf);
+  if(suf.empty()) {
+    res.emplace(pref);
+    return;
+  }
+  REP(i,SZ(suf)) {
+    string suf2=suf;
+    string pref2=pref+suf[i];
+    suf2.erase(suf2.begin()+i);
+    dfs(pref2,suf2);
+  }
+}
+
 void solve() {
+  dfs("",S);
+  vector<string> ans(ALL(res));
+  cout<<ans[N-1]<<endl;
+}
+
+void solve_np() {
   sort(ALL(S));
   int k=0;
   do {
