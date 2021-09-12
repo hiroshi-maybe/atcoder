@@ -103,3 +103,7 @@ proconio = { version = "=0.3.6", features = ["derive"] }
 # ある長さまでは要素を「直に」持つ可変長配列
 #smallvec = "=1.2.0"
 
+[[bin]]
+name = "weather_forecast"
+path = "weather_forecast.rs"
+
