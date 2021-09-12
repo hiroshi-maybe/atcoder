@@ -107,3 +107,7 @@ proconio = { version = "=0.3.6", features = ["derive"] }
 name = "weather_forecast"
 path = "weather_forecast.rs"
 
+[[bin]]
+name = "qwerty"
+path = "qwerty.rs"
+
