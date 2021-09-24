@@ -111,3 +111,27 @@ path = "weather_forecast.rs"
 name = "qwerty"
 path = "qwerty.rs"
 
+[[bin]]
+name = "atcoder_quiz_2"
+path = "atcoder_quiz_2.rs"
+
+[[bin]]
+name = "maritozzo"
+path = "maritozzo.rs"
+
+[[bin]]
+name = "neolexicographic_ordering"
+path = "neolexicographic_ordering.rs"
+
+[[bin]]
+name = "strange_lunchbox"
+path = "strange_lunchbox.rs"
+
+[[bin]]
+name = "moat"
+path = "moat.rs"
+
+[[bin]]
+name = "make_10"
+path = "make_10.rs"
+
