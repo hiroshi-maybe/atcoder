@@ -1,0 +1,195 @@
+#![allow(unused_macros, unused_imports)]
+use std::cmp::*;
+use std::collections::*;
+
+#[rustfmt::skip]
+#[macro_use]
+#[allow(dead_code)]
+mod io {
+	macro_rules! with_dollar_sign { ($($body:tt)*) => { macro_rules! __with_dollar_sign { $($body)* } __with_dollar_sign!($); }}
+	macro_rules! setup_out {
+		($fn:ident,$fn_s:ident) => {
+			use std::io::Write;
+			let out = std::io::stdout();
+			let mut out = ::std::io::BufWriter::new(out.lock());
+			with_dollar_sign! { ($d:tt) => {
+				macro_rules! $fn { ($d($format:tt)*) => { let _ = write!(out,$d($format)*); } }
+				macro_rules! $fn_s { ($d($format:tt)*) => { let _ = writeln!(out,$d($format)*); } }
+			}}
+		};
+	}
+	macro_rules! _epr { ($v:expr $(,)?) => {eprint!("{} = {:?}, ", stringify!($v), $v)}; }
+	macro_rules! dbgln { ($($val:expr),*) => {{ eprint!("[{}:{}] ", file!(), line!()); ($(_epr!($val)),*); eprintln!(); }}; }
+	pub fn readln() -> String {
+		let mut line = String::new();
+		::std::io::stdin().read_line(&mut line).unwrap_or_else(|e| panic!("{}", e));
+		line
+	}
+	macro_rules! readlns {
+		($($t:tt),*; $n:expr) => {{ let stdin = ::std::io::stdin();
+			::std::io::BufRead::lines(stdin.lock()).take($n).map(|line| {
+				let line = line.unwrap(); #[allow(unused_mut)]let mut it = line.split_whitespace(); _read!(it; $($t),*)
+			}).collect::<Vec<_>>()
+		}};
+	}
+	macro_rules! readln {
+		($($t:tt),*) => {{ let line = io::readln(); #[allow(unused_mut)]let mut it = line.split_whitespace(); _read!(it; $($t),*) }};
+	}
+	macro_rules! _read {
+		($it:ident; [char]) => { _read!($it; String).chars().collect::<Vec<_>>() };
+		($it:ident; [u8]) => { Vec::from(_read!($it; String).into_bytes()) };
+		($it:ident; usize1) => { $it.next().unwrap_or_else(|| panic!("input mismatch")).parse::<usize>().unwrap_or_else(|e| panic!("{}", e)) - 1 };
+		($it:ident; [usize1]) => { $it.map(|s| s.parse::<usize>().unwrap_or_else(|e| panic!("{}", e)) - 1).collect::<Vec<_>>() };
+		($it:ident; [$t:ty]) => { $it.map(|s| s.parse::<$t>().unwrap_or_else(|e| panic!("{}", e))).collect::<Vec<_>>() };
+		($it:ident; $t:ty) => { $it.next().unwrap_or_else(|| panic!("input mismatch")).parse::<$t>().unwrap_or_else(|e| panic!("{}", e)) };
+		($it:ident; $($t:tt),+) => { ($(_read!($it; $t)),*) };
+	}
+}
+
+// region: mod_int
+
+#[rustfmt::skip]
+#[macro_use]
+#[allow(dead_code)]
+pub mod mod_int {
+	use std::convert::TryFrom;
+	use std::marker::PhantomData;
+	use std::ops::*;
+	pub trait Modulus: Copy { fn modulus() -> i64; }
+
+	#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
+	pub struct ModInt<M> { val: u32, phantom: PhantomData<fn() -> M> }
+	impl<M: Modulus> ModInt<M> {
+		pub fn val(self) -> u32 { self.val }
+		pub fn pow(self, mut n: i64) -> Self {
+			debug_assert!(n >= 0);
+			let mut res = Self::raw(1);
+			let mut p = self;
+			while n > 0 {
+				if n % 2 != 0 { res *= p; }
+				p *= p; n >>= 1;
+			}
+			res
+		}
+		pub fn inv(self) -> Self { self.pow(M::modulus() - 2) }
+		fn new(val: i64) -> Self {
+			let mut v = val;
+			if val < 0 { v = v % M::modulus() + M::modulus(); }
+			if v >= M::modulus() { v -= M::modulus(); }
+			if v >= M::modulus() { v %= M::modulus(); }
+			Self::raw(v)
+		}
+		fn raw(val: i64) -> Self { Self { val: u32::try_from(val).unwrap(), phantom: PhantomData } }
+	}
+	impl<M: Modulus, T: Into<ModInt<M>>> Add<T> for ModInt<M> {
+		type Output = Self;
+		fn add(self, other: T) -> Self { Self::new(self.val as i64 + other.into().val as i64) }
+	}
+	impl<M: Modulus, T: Into<ModInt<M>>> Sub<T> for ModInt<M> {
+		type Output = Self;
+		fn sub(self, other: T) -> Self { Self::new(self.val as i64 - other.into().val as i64) }
+	}
+	impl<M: Modulus, T: Into<ModInt<M>>> Mul<T> for ModInt<M> {
+		type Output = Self;
+		fn mul(self, other: T) -> Self { Self::new((self.val as i64) * (other.into().val as i64) % M::modulus()) }
+	}
+	impl<M: Modulus, T: Into<ModInt<M>>> Div<T> for ModInt<M> {
+		type Output = Self;
+		fn div(self, other: T) -> Self { self * other.into().inv() }
+	}
+	impl<M: Modulus, T: Into<ModInt<M>>> AddAssign<T> for ModInt<M> {
+		fn add_assign(&mut self, other: T) { *self = *self + other; }
+	}
+	impl<M: Modulus, T: Into<ModInt<M>>> SubAssign<T> for ModInt<M> {
+		fn sub_assign(&mut self, other: T) { *self = *self - other; }
+	}
+	impl<M: Modulus, T: Into<ModInt<M>>> MulAssign<T> for ModInt<M> {
+		fn mul_assign(&mut self, other: T) { *self = *self * other; }
+	}
+	impl<M: Modulus, T: Into<ModInt<M>>> DivAssign<T> for ModInt<M> {
+		fn div_assign(&mut self, other: T) { *self = *self / other; }
+	}
+	impl<M: Modulus> Neg for ModInt<M> {
+		type Output = Self;
+		fn neg(self) -> Self { Self::new(-(self.val as i64)) }
+	}
+	impl<M: Modulus> ::std::fmt::Display for ModInt<M> {
+		fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result { self.val().fmt(f) }
+	}
+	macro_rules! define_modulus {
+		($struct_name: ident, $modulo: expr) => {
+			#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+			pub struct $struct_name {}
+			impl mod_int::Modulus for $struct_name { fn modulus() -> i64 { $modulo } }
+		};
+	}
+	macro_rules! define_convert {
+		($integer:ty) => {
+			impl<M: Modulus> From<$integer> for ModInt<M> { fn from(v: $integer) -> ModInt<M> { ModInt::<M>::new(v as i64) } }
+		};
+	}
+	define_convert!(i32); define_convert!(u32); define_convert!(i64); define_convert!(u64); define_convert!(usize);
+}
+define_modulus!(Mod1000000007, 1_000_000_007);
+define_modulus!(Mod998244353, 998_244_353);
+pub type ModInt1000000007 = mod_int::ModInt<Mod1000000007>;
+pub type ModInt998244353 = mod_int::ModInt<Mod998244353>;
+type ModInt = ModInt1000000007;
+// endregion: mod_int
+
+// region: comb
+
+#[rustfmt::skip]
+#[allow(dead_code)]
+pub mod comb {
+	use super::mod_int::{ModInt, Modulus};
+	pub struct Com<T> { fac: Vec<T>, ifac: Vec<T> }
+	impl<M: Modulus> Com<ModInt<M>> {
+		pub fn new(n: usize) -> Com<ModInt<M>> {
+			let mut fac = vec![ModInt::<M>::from(1); n + 1];
+			let mut ifac = vec![ModInt::<M>::from(1); n + 1];
+			for i in 1..=n { fac[i] = fac[i - 1] * i; }
+			ifac[n] = ModInt::<M>::from(1) / fac[n];
+			for i in (1..=n - 1).rev() { ifac[i] = ifac[i + 1] * (i + 1); }
+			Com { fac, ifac }
+		}
+		pub fn choose(&self, n: usize, k: usize) -> ModInt<M> {
+			if n < k { return ModInt::<M>::from(0); }
+			self.fac[n] * self.ifac[n - k] * self.ifac[k]
+		}
+		pub fn fact(&self, n: usize) -> ModInt<M> { self.fac[n] }
+		pub fn perm(&self, n: usize, k: usize) -> ModInt<M> {
+			if n < k { return ModInt::<M>::from(0); }
+			self.fac[n] * self.ifac[n - k]
+		}
+		pub fn multi_choose(&self, n: usize, k: usize) -> ModInt<M> {
+			if n == 0 && k == 0 { return ModInt::<M>::from(1); }
+			self.choose(n + k - 1, k)
+		}
+	}
+}
+use comb::Com;
+// endregion: comb
+
+// $ rs-cp-batch ubiquity_rs | diff ubiquity_rs.out -
+// $ cargo run --bin ubiquity_rs
+
+///
+/// 10/1/2021
+///
+/// 9:15-9:25 submit to verify combinatorics library (C++ 182 ms vs Rust 304 ms)
+///
+
+fn main() {
+    setup_out!(put, puts);
+
+    let n = readln!(usize);
+    let com = Com::<ModInt>::new(2_000_000);
+    let mut res = ModInt::from(0);
+    for cnt1 in 1..n {
+        res += com.choose(n, cnt1)
+            * (ModInt::from(9).pow((n - cnt1) as i64) - ModInt::from(8).pow((n - cnt1) as i64));
+    }
+
+    puts!("{}", res);
+}
