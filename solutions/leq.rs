@@ -136,48 +136,72 @@ pub type ModInt1000000007 = mod_int::ModInt<Mod1000000007>;
 pub type ModInt998244353 = mod_int::ModInt<Mod998244353>;
 type ModInt = ModInt998244353;
 
-pub struct FenwickTree<T> {
-    n: usize,
-    ary: Vec<T>,
-    e: T,
-}
+#[rustfmt::skip]
+#[allow(dead_code)]
+pub mod bit {
+	pub struct BIT<T> { n: usize, dat: Vec<T>, /* dat[i] = ∑ { A[g(i)..=i] } */ identity: T }
+	impl<T> BIT<T>
+	where
+		T: Clone + std::ops::AddAssign,
+	{
+		pub fn new(n: usize, identity: T) -> Self {
+			BIT { n, dat: vec![identity.clone(); n], identity }
+		}
+		// A[pos] += delta
+		pub fn add(&mut self, pos: usize, delta: T) {
+			let mut i = pos + 1;
+			while i <= self.n {
+				self.dat[i - 1] += delta.clone();
+				i = h(i);
+			}
+		}
+		// query ∑ { A[i] : i=r.start..<r.end }
+		pub fn query_range(&self, range: std::ops::Range<usize>) -> T
+		where
+			T: std::ops::Sub<Output = T>,
+		{
+			debug_assert!(range.start <= range.end);
+			self.query(..range.end) - self.query(..range.start)
+		}
+		// query ∑ { A[i] : i=0..<r.end }
+		pub fn query(&self, range: std::ops::RangeTo<usize>) -> T {
+			let mut r = range.end;
+			debug_assert!(r <= self.n);
+			let mut res = self.identity.clone();
+			while r > 0 {
+				res += self.dat[r - 1].clone();
+				r = std::cmp::max(g(r), 1) - 1;
+			}
+			res
+		}
+	}
+	fn g(i: usize) -> usize { i & (i + 1) }
+	fn h(i: usize) -> usize { i | (i + 1) }
 
-impl<T: Clone + std::ops::AddAssign<T>> FenwickTree<T> {
-    pub fn new(n: usize, e: T) -> Self {
-        FenwickTree {
-            n,
-            ary: vec![e.clone(); n],
-            e,
-        }
-    }
-    pub fn accum(&self, mut idx: usize) -> T {
-        let mut sum = self.e.clone();
-        while idx > 0 {
-            sum += self.ary[idx - 1].clone();
-            idx &= idx - 1;
-        }
-        sum
-    }
-    /// performs data[idx] += val;
-    pub fn add<U: Clone>(&mut self, mut idx: usize, val: U)
-    where
-        T: std::ops::AddAssign<U>,
-    {
-        let n = self.n;
-        idx += 1;
-        while idx <= n {
-            self.ary[idx - 1] += val.clone();
-            idx += idx & idx.wrapping_neg();
-        }
-    }
-    /// Returns data[l] + ... + data[r - 1].
-    pub fn sum(&self, l: usize, r: usize) -> T
-    where
-        T: std::ops::Sub<Output = T>,
-    {
-        self.accum(r) - self.accum(l)
-    }
+	pub fn compress<T: Ord + Clone>(a: Vec<T>) -> Vec<usize> {
+		let mut aa = a.clone();
+		aa.sort_unstable();
+		aa.dedup();
+		let mut res = vec![];
+		res.reserve(a.len());
+		for i in 0..a.len() {
+			res.push(aa.binary_search(&a[i]).unwrap());
+		}
+		res
+	}
+	pub fn inversions(a: &Vec<i32>) -> Vec<usize> {
+		let a = compress(a.clone());
+		let n = a.len();
+		let mut bit = BIT::new(n, 0usize);
+		let mut res = vec![0; n];
+		for i in (0..n).rev() {
+			res[i] = bit.query(..a[i]);
+			bit.add(a[i], 1);
+		}
+		res
+	}
 }
+pub use bit::{compress, inversions, BIT};
 
 // $ rs-cp-batch leq | diff leq.out -
 // $ cargo run --bin leq
@@ -218,7 +242,7 @@ fn solve_v0() -> ModInt {
     for i in 0..n {
         dat[ord[i]] = ModInt::from(2).pow(i as i64);
     }
-    let mut bit = FenwickTree::new(n, ModInt::from(0));
+    let mut bit = BIT::new(n, ModInt::from(0));
     for i in 0..n {
         bit.add(i, dat[i]);
     }
@@ -226,25 +250,13 @@ fn solve_v0() -> ModInt {
     let mut res = ModInt::from(0);
     for i in 0..n {
         let p = ord[i];
-        let sum = bit.sum(p + 1, n);
+        let sum = bit.query_range(p + 1..n);
         let pow2 = ModInt::from(2).pow((i + 1) as i64);
         //dbgln!(i, p, sum.val(), pow2.val(), (sum / pow2).val());
         res += sum / pow2;
         //dbgln!(i, res.val());
         bit.add(p, -dat[p]);
         // assert!(bit.sum(p, p + 1) == ModInt::from(0));
-    }
-    res
-}
-
-fn compress<T: Ord + Clone>(a: Vec<T>) -> Vec<usize> {
-    let mut aa = a.clone();
-    aa.sort_unstable();
-    aa.dedup();
-    let mut res = vec![];
-    res.reserve(a.len());
-    for i in 0..a.len() {
-        res.push(aa.binary_search(&a[i]).unwrap());
     }
     res
 }
@@ -256,7 +268,7 @@ fn solve_move_left() -> ModInt {
     let a = readln!([i64]);
     let a = compress(a);
     // dbgln!(a);
-    let mut bit = FenwickTree::new(n, ModInt::from(0));
+    let mut bit = BIT::new(n, ModInt::from(0));
     let mut p2 = ModInt::from(1);
     for i in 0..n {
         bit.add(a[i], p2);
@@ -268,7 +280,7 @@ fn solve_move_left() -> ModInt {
     for i in 0..n {
         bit.add(a[i], -p2);
         p2 *= 2;
-        let sum = bit.sum(a[i], n);
+        let sum = bit.query_range(a[i]..n);
         res += sum / p2;
     }
 
@@ -276,18 +288,19 @@ fn solve_move_left() -> ModInt {
 }
 
 // 92 ms
+#[allow(dead_code)]
 fn solve_move_right() -> ModInt {
     let n = readln!(usize);
     let a = readln!([i64]);
     let a = compress(a);
     // dbgln!(a);
-    let mut bit = FenwickTree::new(n, ModInt::from(0));
+    let mut bit = BIT::new(n, ModInt::from(0));
     let mut res = ModInt::from(0);
     let mut p2 = ModInt::from(1);
     let inv2 = ModInt::from(1) / 2;
     let mut curinv = ModInt::from(1);
     for i in 0..n {
-        let sum = bit.sum(0, a[i] + 1);
+        let sum = bit.query(..a[i] + 1);
         res += sum * p2;
         curinv *= inv2;
         bit.add(a[i], curinv);
@@ -300,5 +313,5 @@ fn solve_move_right() -> ModInt {
 fn main() {
     setup_out!(put, puts);
 
-    puts!("{}", solve_move_right().val());
+    puts!("{}", solve_move_right());
 }
