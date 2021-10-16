@@ -135,3 +135,87 @@ path = "moat.rs"
 name = "make_10"
 path = "make_10.rs"
 
+[[bin]]
+name = "dist_max_2"
+path = "dist_max_2.rs"
+
+[[bin]]
+name = "leading_1s"
+path = "leading_1s.rs"
+
+[[bin]]
+name = "ternary_strings"
+path = "ternary_strings.rs"
+
+[[bin]]
+name = "find_multiple"
+path = "find_multiple.rs"
+
+[[bin]]
+name = "base_k"
+path = "base_k.rs"
+
+[[bin]]
+name = "long_sequence"
+path = "long_sequence.rs"
+
+[[bin]]
+name = "fg_operation"
+path = "fg_operation.rs"
+
+[[bin]]
+name = "ubiquity2"
+path = "ubiquity2.rs"
+
+[[bin]]
+name = "ubiquity_rs"
+path = "ubiquity_rs.rs"
+
+[[bin]]
+name = "seismic_magnitude_scales"
+path = "seismic_magnitude_scales.rs"
+
+[[bin]]
+name = "typo"
+path = "typo.rs"
+
+[[bin]]
+name = "select_mul"
+path = "select_mul.rs"
+
+[[bin]]
+name = "online_games"
+path = "online_games.rs"
+
+[[bin]]
+name = "leq"
+path = "leq.rs"
+
+[[bin]]
+name = "four_digits"
+path = "four_digits.rs"
+
+[[bin]]
+name = "failing_grade"
+path = "failing_grade.rs"
+
+[[bin]]
+name = "swisssystem_tournament"
+path = "swisssystem_tournament.rs"
+
+[[bin]]
+name = "between_two_arrays"
+path = "between_two_arrays.rs"
+
+[[bin]]
+name = "red_and_blue_tree"
+path = "red_and_blue_tree.rs"
+
+[[bin]]
+name = "gold_and_silver"
+path = "gold_and_silver.rs"
+
+[[bin]]
+name = "balls_of_three_colors"
+path = "balls_of_three_colors.rs"
+
