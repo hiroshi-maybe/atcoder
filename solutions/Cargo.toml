@@ -219,3 +219,19 @@ path = "gold_and_silver.rs"
 name = "balls_of_three_colors"
 path = "balls_of_three_colors.rs"
 
+[[bin]]
+name = "exact_price"
+path = "exact_price.rs"
+
+[[bin]]
+name = "string_shifting"
+path = "string_shifting.rs"
+
+[[bin]]
+name = "doukasen"
+path = "doukasen.rs"
+
+[[bin]]
+name = "restricted_permutation"
+path = "restricted_permutation.rs"
+
