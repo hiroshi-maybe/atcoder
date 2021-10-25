@@ -2,17 +2,44 @@
 use std::cmp::*;
 use std::collections::*;
 
+// $ rs-cp-batch ubiquity_rs | diff ubiquity_rs.out -
+// $ cargo run --bin ubiquity_rs
+
+///
+/// 10/1/2021
+///
+/// 9:15-9:25 submit to verify combinatorics library (C++ 182 ms vs Rust 304 ms)
+///
+
+fn main() {
+    setup_out!(put, puts);
+
+    let n = readln!(usize);
+    let com = Com::<ModInt>::new(2_000_000);
+    let mut res = ModInt::from(0);
+    for cnt1 in 1..n {
+        res += com.choose(n, cnt1)
+            * (ModInt::from(9).pow((n - cnt1) as i64) - ModInt::from(8).pow((n - cnt1) as i64));
+    }
+
+    puts!("{}", res);
+}
+
+use crate::cplib::io::*;
+use crate::cplib::minmax::*;
+use crate::cplib::vec::*;
+// region: cplib
 #[rustfmt::skip]
-#[macro_use]
 #[allow(dead_code)]
-mod io {
-	macro_rules! with_dollar_sign { ($($body:tt)*) => { macro_rules! __with_dollar_sign { $($body)* } __with_dollar_sign!($); }}
+pub mod cplib {
+pub mod io {
+	macro_rules! _with_dollar_sign { ($($body:tt)*) => { macro_rules! __with_dollar_sign { $($body)* } __with_dollar_sign!($); }}
 	macro_rules! setup_out {
 		($fn:ident,$fn_s:ident) => {
 			use std::io::Write;
 			let out = std::io::stdout();
 			let mut out = ::std::io::BufWriter::new(out.lock());
-			with_dollar_sign! { ($d:tt) => {
+				_with_dollar_sign! { ($d:tt) => {
 				macro_rules! $fn { ($d($format:tt)*) => { let _ = write!(out,$d($format)*); } }
 				macro_rules! $fn_s { ($d($format:tt)*) => { let _ = writeln!(out,$d($format)*); } }
 			}}
@@ -20,20 +47,10 @@ mod io {
 	}
 	macro_rules! _epr { ($v:expr $(,)?) => {eprint!("{} = {:?}, ", stringify!($v), $v)}; }
 	macro_rules! dbgln { ($($val:expr),*) => {{ eprint!("[{}:{}] ", file!(), line!()); ($(_epr!($val)),*); eprintln!(); }}; }
-	pub fn readln() -> String {
+	pub fn readln_str() -> String {
 		let mut line = String::new();
 		::std::io::stdin().read_line(&mut line).unwrap_or_else(|e| panic!("{}", e));
 		line
-	}
-	macro_rules! readlns {
-		($($t:tt),*; $n:expr) => {{ let stdin = ::std::io::stdin();
-			::std::io::BufRead::lines(stdin.lock()).take($n).map(|line| {
-				let line = line.unwrap(); #[allow(unused_mut)]let mut it = line.split_whitespace(); _read!(it; $($t),*)
-			}).collect::<Vec<_>>()
-		}};
-	}
-	macro_rules! readln {
-		($($t:tt),*) => {{ let line = io::readln(); #[allow(unused_mut)]let mut it = line.split_whitespace(); _read!(it; $($t),*) }};
 	}
 	macro_rules! _read {
 		($it:ident; [char]) => { _read!($it; String).chars().collect::<Vec<_>>() };
@@ -44,12 +61,46 @@ mod io {
 		($it:ident; $t:ty) => { $it.next().unwrap_or_else(|| panic!("input mismatch")).parse::<$t>().unwrap_or_else(|e| panic!("{}", e)) };
 		($it:ident; $($t:tt),+) => { ($(_read!($it; $t)),*) };
 	}
+	macro_rules! readlns {
+		($($t:tt),*; $n:expr) => {{ let stdin = ::std::io::stdin();
+			::std::io::BufRead::lines(stdin.lock()).take($n).map(|line| {
+				let line = line.unwrap(); #[allow(unused_mut)]let mut it = line.split_whitespace(); _read!(it; $($t),*)
+			}).collect::<Vec<_>>()
+		}};
+	}
+	macro_rules! readln {
+		($($t:tt),*) => {{ let line = cplib::io::readln_str(); #[allow(unused_mut)]let mut it = line.split_whitespace(); _read!(it; $($t),*) }};
+	}
+	pub(crate) use {readlns, readln, setup_out, dbgln, _with_dollar_sign, _epr, _read};
 }
+pub mod minmax {
+	pub trait SetMinMax {
+		fn setmin<'a>(&'a mut self, other: Self) -> (bool, &'a Self);
+		fn setmax<'a>(&'a mut self, other: Self) -> (bool, &'a Self);
+	}
+	macro_rules! _set { ($self:ident, $cmp:tt, $other:ident) => {{
+			let update = $other $cmp *$self;
+			if update { *$self = $other; }
+			(update, $self)
+	}}; }
+	impl<T> SetMinMax for T where T: PartialOrd {
+		fn setmin<'a>(&'a mut self, other: T) -> (bool, &'a Self) { _set!(self, <, other) }
+		fn setmax<'a>(&'a mut self, other: T) -> (bool, &'a Self) { _set!(self, >, other) }
+	}
+}
+pub mod vec {
+	macro_rules! vvec {
+		($v:expr; $n:expr) => { Vec::from(vec![$v; $n]) };
+		($v:expr; $n:expr $(; $ns:expr)+) => { Vec::from(vec![vvec![$v $(; $ns)*]; $n]) };
+	}
+	pub(crate) use vvec;
+}
+}
+// endregion: cplib
 
 // region: mod_int
 
 #[rustfmt::skip]
-#[macro_use]
 #[allow(dead_code)]
 pub mod mod_int {
 	use std::convert::TryFrom;
@@ -57,7 +108,7 @@ pub mod mod_int {
 	use std::ops::*;
 	pub trait Modulus: Copy { fn modulus() -> i64; }
 
-	#[derive(Copy, Clone, Debug, Hash, PartialEq, Eq, PartialOrd, Ord)]
+	#[derive(Copy, Clone, Default, Hash, PartialEq, Eq, PartialOrd, Ord)]
 	pub struct ModInt<M> { val: u32, phantom: PhantomData<fn() -> M> }
 	impl<M: Modulus> ModInt<M> {
 		pub fn val(self) -> u32 { self.val }
@@ -116,11 +167,14 @@ pub mod mod_int {
 	impl<M: Modulus> ::std::fmt::Display for ModInt<M> {
 		fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result { self.val().fmt(f) }
 	}
+	impl<M: Modulus> ::std::fmt::Debug for ModInt<M> {
+		fn fmt(&self, f: &mut ::std::fmt::Formatter) -> ::std::fmt::Result { self.val().fmt(f) }
+	}
 	macro_rules! define_modulus {
 		($struct_name: ident, $modulo: expr) => {
-			#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+			#[derive(Copy, Clone, Default, PartialEq, Eq, PartialOrd, Ord, Hash)]
 			pub struct $struct_name {}
-			impl mod_int::Modulus for $struct_name { fn modulus() -> i64 { $modulo } }
+			impl Modulus for $struct_name { fn modulus() -> i64 { $modulo } }
 		};
 	}
 	macro_rules! define_convert {
@@ -129,12 +183,15 @@ pub mod mod_int {
 		};
 	}
 	define_convert!(i32); define_convert!(u32); define_convert!(i64); define_convert!(u64); define_convert!(usize);
+	define_modulus!(Mod1000000007, 1_000_000_007); define_modulus!(Mod998244353, 998_244_353);
+	pub(crate) use define_modulus;
 }
-define_modulus!(Mod1000000007, 1_000_000_007);
-define_modulus!(Mod998244353, 998_244_353);
+pub use mod_int::*;
 pub type ModInt1000000007 = mod_int::ModInt<Mod1000000007>;
 pub type ModInt998244353 = mod_int::ModInt<Mod998244353>;
+// type ModInt = ModInt998244353;
 type ModInt = ModInt1000000007;
+
 // endregion: mod_int
 
 // region: comb
@@ -168,28 +225,5 @@ pub mod comb {
 		}
 	}
 }
-use comb::Com;
+pub use comb::Com;
 // endregion: comb
-
-// $ rs-cp-batch ubiquity_rs | diff ubiquity_rs.out -
-// $ cargo run --bin ubiquity_rs
-
-///
-/// 10/1/2021
-///
-/// 9:15-9:25 submit to verify combinatorics library (C++ 182 ms vs Rust 304 ms)
-///
-
-fn main() {
-    setup_out!(put, puts);
-
-    let n = readln!(usize);
-    let com = Com::<ModInt>::new(2_000_000);
-    let mut res = ModInt::from(0);
-    for cnt1 in 1..n {
-        res += com.choose(n, cnt1)
-            * (ModInt::from(9).pow((n - cnt1) as i64) - ModInt::from(8).pow((n - cnt1) as i64));
-    }
-
-    puts!("{}", res);
-}
