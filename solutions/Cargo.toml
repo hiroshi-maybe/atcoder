@@ -235,3 +235,11 @@ path = "doukasen.rs"
 name = "restricted_permutation"
 path = "restricted_permutation.rs"
 
+[[bin]]
+name = "cutting_woods"
+path = "cutting_woods.rs"
+
+[[bin]]
+name = "big_array"
+path = "big_array.rs"
+
