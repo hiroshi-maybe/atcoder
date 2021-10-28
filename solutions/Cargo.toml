@@ -243,3 +243,7 @@ path = "cutting_woods.rs"
 name = "big_array"
 path = "big_array.rs"
 
+[[bin]]
+name = "cfilter"
+path = "cfilter.rs"
+
