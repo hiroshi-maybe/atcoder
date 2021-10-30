@@ -263,3 +263,7 @@ path = "amidakuji.rs"
 name = "biscuits"
 path = "biscuits.rs"
 
+[[bin]]
+name = "double_factorial"
+path = "double_factorial.rs"
+
