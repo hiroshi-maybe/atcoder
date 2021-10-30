@@ -247,3 +247,19 @@ path = "big_array.rs"
 name = "cfilter"
 path = "cfilter.rs"
 
+[[bin]]
+name = "123_subtraction"
+path = "123_subtraction.rs"
+
+[[bin]]
+name = "tribonacci_sequence"
+path = "tribonacci_sequence.rs"
+
+[[bin]]
+name = "amidakuji"
+path = "amidakuji.rs"
+
+[[bin]]
+name = "biscuits"
+path = "biscuits.rs"
+
