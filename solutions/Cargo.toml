@@ -267,3 +267,23 @@ path = "biscuits.rs"
 name = "double_factorial"
 path = "double_factorial.rs"
 
+[[bin]]
+name = "distinct_strings"
+path = "distinct_strings.rs"
+
+[[bin]]
+name = "star_or_not"
+path = "star_or_not.rs"
+
+[[bin]]
+name = "calendar_validator"
+path = "calendar_validator.rs"
+
+[[bin]]
+name = "play_train"
+path = "play_train.rs"
+
+[[bin]]
+name = "fu"
+path = "fu.rs"
+
