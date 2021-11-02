@@ -287,3 +287,7 @@ path = "play_train.rs"
 name = "fu"
 path = "fu.rs"
 
+[[bin]]
+name = "abc_identity"
+path = "abc_identity.rs"
+
