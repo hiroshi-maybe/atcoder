@@ -295,3 +295,7 @@ path = "abc_identity.rs"
 name = "takahashis_salary"
 path = "takahashis_salary.rs"
 
+[[bin]]
+name = "atcoder_programming_training"
+path = "atcoder_programming_training.rs"
+
