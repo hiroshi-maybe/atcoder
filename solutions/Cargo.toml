@@ -291,3 +291,7 @@ path = "fu.rs"
 name = "abc_identity"
 path = "abc_identity.rs"
 
+[[bin]]
+name = "takahashis_salary"
+path = "takahashis_salary.rs"
+
