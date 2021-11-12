@@ -299,3 +299,47 @@ path = "takahashis_salary.rs"
 name = "atcoder_programming_training"
 path = "atcoder_programming_training.rs"
 
+[[bin]]
+name = "zigzag"
+path = "zigzag.rs"
+
+[[bin]]
+name = "airport_bus"
+path = "airport_bus.rs"
+
+[[bin]]
+name = "two_hop_friends"
+path = "two_hop_friends.rs"
+
+[[bin]]
+name = "takahashi_in_wonder_land"
+path = "takahashi_in_wonder_land.rs"
+
+[[bin]]
+name = "niconico_string"
+path = "niconico_string.rs"
+
+[[bin]]
+name = "flipping_signs"
+path = "flipping_signs.rs"
+
+[[bin]]
+name = "how_to_sell_awesome_takoyakis"
+path = "how_to_sell_awesome_takoyakis.rs"
+
+[[bin]]
+name = "hayhos_last_exam"
+path = "hayhos_last_exam.rs"
+
+[[bin]]
+name = "dubious_document_2"
+path = "dubious_document_2.rs"
+
+[[bin]]
+name = "transform_scores"
+path = "transform_scores.rs"
+
+[[bin]]
+name = "island_and_bridge"
+path = "island_and_bridge.rs"
+
