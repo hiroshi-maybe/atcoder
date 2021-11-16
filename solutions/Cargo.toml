@@ -343,3 +343,35 @@ path = "transform_scores.rs"
 name = "island_and_bridge"
 path = "island_and_bridge.rs"
 
+[[bin]]
+name = "between_a_and_b"
+path = "between_a_and_b.rs"
+
+[[bin]]
+name = "last_card"
+path = "last_card.rs"
+
+[[bin]]
+name = "keyence_building"
+path = "keyence_building.rs"
+
+[[bin]]
+name = "abc_conjecture"
+path = "abc_conjecture.rs"
+
+[[bin]]
+name = "project_planning"
+path = "project_planning.rs"
+
+[[bin]]
+name = "message_board"
+path = "message_board.rs"
+
+[[bin]]
+name = "send_more_money"
+path = "send_more_money.rs"
+
+[[bin]]
+name = "takahashi_and_image_processing"
+path = "takahashi_and_image_processing.rs"
+
