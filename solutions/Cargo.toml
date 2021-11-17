@@ -375,3 +375,11 @@ path = "send_more_money.rs"
 name = "takahashi_and_image_processing"
 path = "takahashi_and_image_processing.rs"
 
+[[bin]]
+name = "pile_up_boxes"
+path = "pile_up_boxes.rs"
+
+[[bin]]
+name = "squares_2"
+path = "squares_2.rs"
+
