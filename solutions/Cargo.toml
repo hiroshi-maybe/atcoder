@@ -383,3 +383,11 @@ path = "pile_up_boxes.rs"
 name = "squares_2"
 path = "squares_2.rs"
 
+[[bin]]
+name = "ameba"
+path = "ameba.rs"
+
+[[bin]]
+name = "handstand_2"
+path = "handstand_2.rs"
+
