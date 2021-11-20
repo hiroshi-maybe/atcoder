@@ -391,3 +391,11 @@ path = "ameba.rs"
 name = "handstand_2"
 path = "handstand_2.rs"
 
+[[bin]]
+name = "two_arrays"
+path = "two_arrays.rs"
+
+[[bin]]
+name = "coprime"
+path = "coprime.rs"
+
