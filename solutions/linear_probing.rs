@@ -17,50 +17,54 @@ use std::collections::*;
 /// https://atcoder.jp/contests/abc228/editorial/2944
 ///
 
-struct Unionfind {
-    par: Vec<usize>,
-    sizes: Vec<usize>,
+// region: union_find
+
+#[rustfmt::skip]
+#[allow(dead_code)]
+mod uf {
+	pub struct UnionFind {
+		pub group_count: usize,
+		par: Vec<usize>, sizes: Vec<usize>,
+	}
+	impl UnionFind {
+		pub fn new(n: usize) -> UnionFind {
+			let par = (0..n).map(|i| i).collect::<Vec<_>>();
+			UnionFind { group_count: n, par, sizes: vec![1; n], }
+		}
+		pub fn find(&mut self, x: usize) -> usize {
+			if self.par[x] == x { x } else {
+				self.par[x] = self.find(self.par[x]);
+				self.par[x]
+			}
+		}
+		pub fn same_set(&mut self, x: usize, y: usize) -> bool { self.find(x) == self.find(y) }
+		pub fn size(&mut self, x: usize) -> usize {
+			let x = self.find(x);
+			self.sizes[x]
+		}
+		pub fn merge(&mut self, x: usize, y: usize) -> usize {
+			let (mut p, mut c) = (self.find(x), self.find(y));
+			if p == c { return p; }
+			if self.sizes[p] < self.sizes[c] { std::mem::swap(&mut p, &mut c); }
+			self.group_count -= 1;
+			self.sizes[p] += self.sizes[c];
+			self.par[c] = p;
+			p
+		}
+	}
 }
+pub use uf::UnionFind;
 
-impl Unionfind {
-    fn new(n: usize) -> Unionfind {
-        let par = (0..n).map(|i| i).collect::<Vec<_>>();
-        Unionfind {
-            par,
-            sizes: vec![1; n],
-        }
-    }
+// endregion: union_find
 
-    fn find(&mut self, i: usize) -> usize {
-        if self.par[i] == i {
-            i
-        } else {
-            self.par[i] = self.find(self.par[i]);
-            self.par[i]
-        }
-    }
-
-    fn merge(&mut self, i: usize, j: usize) -> usize {
-        let (mut p, mut c) = (self.find(i), self.find(j));
-        if p == c {
-            return p;
-        }
-        if self.sizes[p] < self.sizes[c] {
-            std::mem::swap(&mut p, &mut c);
-        }
-        self.sizes[p] += self.sizes[c];
-        self.par[c] = p;
-        p
-    }
-}
-
-fn solve() {
+#[allow(dead_code)]
+fn solve_uf() {
     setup_out!(put, puts);
     let n = 1 << 20;
     let q = readln!(usize);
     let mut a = vec![-1; n];
 
-    let mut uf = Unionfind::new(n);
+    let mut uf = UnionFind::new(n);
     let mut ranges: Vec<Option<(usize, usize)>> = vec![None; n];
 
     for _ in 0..q {
@@ -79,11 +83,9 @@ fn solve() {
                 assert_eq!(ranges[i], None);
                 ranges[i] = Some((i, (i + 1) % n));
                 let mut may_merge = |ll: usize, rr: usize| {
-                    let l = uf.find(ll);
-                    let r = uf.find(rr);
+                    let (l, r) = (uf.find(ll), uf.find(rr));
                     if let (Some((l1, _)), Some((_, r2))) = (ranges[l], ranges[r]) {
-                        let p = uf.merge(l, r);
-                        ranges[p] = Some((l1, r2));
+                        ranges[uf.merge(l, r)] = Some((l1, r2));
                         //dbgln!(p, ranges[p]);
                     }
                 };
@@ -97,7 +99,7 @@ fn solve() {
 }
 
 fn main() {
-    solve();
+    solve_uf();
 }
 
 use crate::cplib::io::*;
