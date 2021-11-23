@@ -13,6 +13,7 @@ use std::collections::*;
 /// 11/22/2021
 ///
 /// 12:12-13:46 AC
+/// 18:33 Add solution with B-tree set
 ///
 /// https://atcoder.jp/contests/abc228/editorial/2944
 ///
@@ -98,8 +99,53 @@ fn solve_uf() {
     }
 }
 
+#[allow(dead_code)]
+fn solve_btreeset() {
+    setup_out!(put, puts);
+    let n = 1 << 20;
+    let q = readln!(usize);
+    let mut a = vec![-1; n];
+    let mut s = BTreeSet::new();
+    s.insert((0, n));
+
+    for _ in 0..q {
+        let (t, x) = readln!(usize, i64);
+        match t {
+            2 => {
+                puts!("{}", a[x as usize % n]);
+            }
+            1 => {
+                let p = x as usize % n;
+                let i = if a[p] == -1 {
+                    let mut it = s.range(..(p, n + 1));
+                    let r = *it.next_back().unwrap();
+                    s.remove(&r);
+                    if r.0 < p {
+                        s.insert((r.0, p));
+                    }
+                    if p + 1 < r.1 {
+                        s.insert((p + 1, r.1));
+                    }
+                    p
+                } else {
+                    let mut it = s.range((p, 0)..);
+                    let r = *it.next().unwrap_or(s.iter().next().unwrap());
+                    s.remove(&r);
+                    if r.0 + 1 < r.1 {
+                        s.insert((r.0 + 1, r.1));
+                    }
+                    r.0
+                };
+                a[i] = x;
+                //dbgln!(p, i, s);
+            }
+            _ => unreachable!(),
+        }
+    }
+}
+
 fn main() {
-    solve_uf();
+    solve_btreeset();
 }
 
 use crate::cplib::io::*;
