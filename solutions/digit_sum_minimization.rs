@@ -22,19 +22,8 @@ use std::collections::*;
 /// https://docs.google.com/document/d/1Yq384PEooRVsmlzB103YMLWwE_JhPN8AbxZagNrF_vY/edit#bookmark=id.uucps3zg6s9m
 ///
 
-pub trait OffsetBy {
-    type Output;
-    fn offset_by(&self, base: &Self) -> Self::Output;
-}
-impl OffsetBy for char {
-    type Output = u8;
-    fn offset_by(&self, base: &char) -> Self::Output {
-        *self as u8 - *base as u8
-    }
-}
-
-fn cnts(a: &Vec<char>) -> Vec<usize> {
-    let a = a.iter().map(|&c| c.offset_by(&'0')).collect_vec();
+fn cnts(a: &Vec<u8>) -> Vec<usize> {
+    let a = a.iter().map(|&c| c - b'0').collect_vec();
     let mut cnt = vec![0; 10];
     for x in a {
         cnt[x as usize] += 1;
@@ -54,10 +43,10 @@ fn mkres(a: &Vec<(usize, usize)>) -> Vec<usize> {
 }
 
 fn solve() -> (Vec<usize>, Vec<usize>) {
-    let a = readln!([char]);
+    let a = readln!([u8]);
     let a = cnts(&a);
 
-    let b = readln!([char]);
+    let b = readln!([u8]);
     let b = cnts(&b);
 
     let mut max_c = -1;
@@ -117,7 +106,7 @@ fn main() {
         puts!(
             "{}",
             x.iter()
-                .map(|&d| std::char::from_digit(d as u32, 10).unwrap())
+                .map(|&d| (b'0' + d as u8) as char)
                 .collect::<String>()
         );
     }
