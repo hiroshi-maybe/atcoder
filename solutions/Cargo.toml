@@ -399,3 +399,31 @@ path = "two_arrays.rs"
 name = "coprime"
 path = "coprime.rs"
 
+[[bin]]
+name = "on_and_off"
+path = "on_and_off.rs"
+
+[[bin]]
+name = "takahashis_secret"
+path = "takahashis_secret.rs"
+
+[[bin]]
+name = "final_day"
+path = "final_day.rs"
+
+[[bin]]
+name = "linear_probing"
+path = "linear_probing.rs"
+
+[[bin]]
+name = "remove_one_character"
+path = "remove_one_character.rs"
+
+[[bin]]
+name = "colorful_lines"
+path = "colorful_lines.rs"
+
+[[bin]]
+name = "digit_sum_minimization"
+path = "digit_sum_minimization.rs"
+
