@@ -427,3 +427,11 @@ path = "colorful_lines.rs"
 name = "digit_sum_minimization"
 path = "digit_sum_minimization.rs"
 
+[[bin]]
+name = "flip"
+path = "flip.rs"
+
+[[bin]]
+name = "robot_arms"
+path = "robot_arms.rs"
+
