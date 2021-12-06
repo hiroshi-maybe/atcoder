@@ -435,3 +435,47 @@ path = "flip.rs"
 name = "robot_arms"
 path = "robot_arms.rs"
 
+[[bin]]
+name = "monotonicincreasing"
+path = "monotonicincreasing.rs"
+
+[[bin]]
+name = "distance_sums_2"
+path = "distance_sums_2.rs"
+
+[[bin]]
+name = "just_one"
+path = "just_one.rs"
+
+[[bin]]
+name = "atcoder_quiz_3"
+path = "atcoder_quiz_3.rs"
+
+[[bin]]
+name = "triple_metre"
+path = "triple_metre.rs"
+
+[[bin]]
+name = "x_drawing"
+path = "x_drawing.rs"
+
+[[bin]]
+name = "destroyer_takahashi"
+path = "destroyer_takahashi.rs"
+
+[[bin]]
+name = "fraction_floor_sum"
+path = "fraction_floor_sum.rs"
+
+[[bin]]
+name = "three_cells_per_row_and_column"
+path = "three_cells_per_row_and_column.rs"
+
+[[bin]]
+name = "two_lucky_numbers"
+path = "two_lucky_numbers.rs"
+
+[[bin]]
+name = "grid_repainting_4"
+path = "grid_repainting_4.rs"
+
