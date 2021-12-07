@@ -479,3 +479,11 @@ path = "two_lucky_numbers.rs"
 name = "grid_repainting_4"
 path = "grid_repainting_4.rs"
 
+[[bin]]
+name = "zero_xor"
+path = "zero_xor.rs"
+
+[[bin]]
+name = "piller_piller_piller_piller_piller"
+path = "piller_piller_piller_piller_piller.rs"
+
