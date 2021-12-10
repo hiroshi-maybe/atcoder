@@ -33,7 +33,7 @@ edition = "2018"
 #libm = "=0.2.1"
 
 # 乱数
-#rand = { version = "=0.7.3", features = ["small_rng"] }
+rand = { version = "=0.7.3", features = ["small_rng"] }
 #getrandom = "=0.1.14"
 #rand_chacha = "=0.2.2"
 #rand_core = "=0.5.1"
@@ -486,4 +486,28 @@ path = "zero_xor.rs"
 [[bin]]
 name = "piller_piller_piller_piller_piller"
 path = "piller_piller_piller_piller_piller.rs"
+
+[[bin]]
+name = "pascal_triangle"
+path = "pascal_triangle.rs"
+
+[[bin]]
+name = "digits_in_multiplication"
+path = "digits_in_multiplication.rs"
+
+[[bin]]
+name = "special_trains"
+path = "special_trains.rs"
+
+[[bin]]
+name = "reversible_cards"
+path = "reversible_cards.rs"
+
+[[bin]]
+name = "find_takahashis_bug"
+path = "find_takahashis_bug.rs"
+
+[[bin]]
+name = "total_summation"
+path = "total_summation.rs"
 
