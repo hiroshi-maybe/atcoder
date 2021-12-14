@@ -511,3 +511,19 @@ path = "find_takahashis_bug.rs"
 name = "total_summation"
 path = "total_summation.rs"
 
+[[bin]]
+name = "lewis_carroll"
+path = "lewis_carroll.rs"
+
+[[bin]]
+name = "random_generator"
+path = "random_generator.rs"
+
+[[bin]]
+name = "snuke_prime"
+path = "snuke_prime.rs"
+
+[[bin]]
+name = "candles"
+path = "candles.rs"
+
