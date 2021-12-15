@@ -527,3 +527,11 @@ path = "snuke_prime.rs"
 name = "candles"
 path = "candles.rs"
 
+[[bin]]
+name = "contest_in_atcoder_kingdom"
+path = "contest_in_atcoder_kingdom.rs"
+
+[[bin]]
+name = "shrinking"
+path = "shrinking.rs"
+
