@@ -535,3 +535,11 @@ path = "contest_in_atcoder_kingdom.rs"
 name = "shrinking"
 path = "shrinking.rs"
 
+[[bin]]
+name = "lining_up"
+path = "lining_up.rs"
+
+[[bin]]
+name = "gt_lt_again"
+path = "gt_lt_again.rs"
+
