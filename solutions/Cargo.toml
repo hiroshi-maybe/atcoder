@@ -543,3 +543,19 @@ path = "lining_up.rs"
 name = "gt_lt_again"
 path = "gt_lt_again.rs"
 
+[[bin]]
+name = "coordinate_compression"
+path = "coordinate_compression.rs"
+
+[[bin]]
+name = "sum_of_maximum_weights"
+path = "sum_of_maximum_weights.rs"
+
+[[bin]]
+name = "robot_arm"
+path = "robot_arm.rs"
+
+[[bin]]
+name = "maze_master"
+path = "maze_master.rs"
+
