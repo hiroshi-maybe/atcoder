@@ -559,3 +559,11 @@ path = "robot_arm.rs"
 name = "maze_master"
 path = "maze_master.rs"
 
+[[bin]]
+name = "aab_aba_baa"
+path = "aab_aba_baa.rs"
+
+[[bin]]
+name = "factors_of_factorial"
+path = "factors_of_factorial.rs"
+
