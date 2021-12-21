@@ -567,3 +567,23 @@ path = "aab_aba_baa.rs"
 name = "factors_of_factorial"
 path = "factors_of_factorial.rs"
 
+[[bin]]
+name = "qq_solver"
+path = "qq_solver.rs"
+
+[[bin]]
+name = "caesar_cipher"
+path = "caesar_cipher.rs"
+
+[[bin]]
+name = "graph_isomorphism"
+path = "graph_isomorphism.rs"
+
+[[bin]]
+name = "weak_takahashi"
+path = "weak_takahashi.rs"
+
+[[bin]]
+name = "rook_path"
+path = "rook_path.rs"
+
