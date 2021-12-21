@@ -14,25 +14,51 @@ use std::collections::*;
 ///
 
 // region: next_permutation
+
 #[rustfmt::skip]
 #[allow(dead_code)]
-pub fn next_permutation<T>(xs: &mut [T]) -> bool
-	where T: std::cmp::Ord
-{
-	let asc_i = match xs.windows(2).rposition(|w| w[0] < w[1]) {
-		Some(i) => i,
-		None => { return false; }
-	};
-	let min_larger_offset = xs[asc_i + 1..]
-		.binary_search_by(|x| match xs[asc_i].cmp(x) {
-			std::cmp::Ordering::Equal => std::cmp::Ordering::Greater,
-			ord => ord,
-		})
-		.unwrap_err();
-	xs.swap(asc_i, asc_i + min_larger_offset);
-	xs[asc_i + 1..].reverse();
-	true
+mod permutation {
+	pub fn next_permutation<T>(xs: &mut [T]) -> bool where T: std::cmp::Ord {
+		let asc_i = match xs.windows(2).rposition(|w| w[0] < w[1]) {
+			Some(i) => i,
+			None => { return false; }
+		};
+		let min_larger_offset = xs[asc_i + 1..]
+			.binary_search_by(|x| match xs[asc_i].cmp(x) {
+				std::cmp::Ordering::Equal => std::cmp::Ordering::Greater,
+				ord => ord,
+			})
+			.unwrap_err();
+		xs.swap(asc_i, asc_i + min_larger_offset);
+		xs[asc_i + 1..].reverse();
+		true
+	}
+	pub trait Permutations<T> { fn permutations(&self) -> Permutation<'_, T> where Self: Sized; }
+	impl<T> Permutations<T> for Vec<T> where T: std::cmp::Ord {
+		fn permutations(&self) -> Permutation<'_, T> { Permutation::new(&self[..]) }
+	}
+	pub struct Permutation<'a, T> { next_perm: Option<Vec<&'a T>>, }
+	impl<'a, T: std::cmp::Ord> Permutation<'a, T> {
+		fn new(dat: &'a [T]) -> Permutation<'a, T> {
+			Permutation { next_perm: Some(dat.iter().map(|x| x).collect::<Vec<_>>()) }
+		}
+	}
+
+	impl<'a, T: std::cmp::Ord> Iterator for Permutation<'a, T> {
+		type Item = Vec<&'a T>;
+		fn next(&mut self) -> Option<Self::Item> {
+			if let Some(perm) = &mut self.next_perm {
+				let res = perm.clone();
+				if !next_permutation(perm) { self.next_perm = None; }
+				Some(res)
+			} else {
+				None
+			}
+		}
+	}
 }
+pub use permutation::{next_permutation, Permutations};
+
 // endregion: next_permutation
 
 fn solve() -> bool {
@@ -50,12 +76,11 @@ fn solve() -> bool {
     }
     g2.sort_unstable();
 
-    let mut p = (0..n).collect_vec();
-    loop {
+    for p in (0..n).collect_vec().permutations() {
         let mut g1 = g1
             .iter()
             .map(|&(u, v)| {
-                let (mut u, mut v) = (p[u], p[v]);
+                let (mut u, mut v) = (*p[u], *p[v]);
                 if u > v {
                     std::mem::swap(&mut u, &mut v);
                 }
@@ -66,10 +91,6 @@ fn solve() -> bool {
 
         if g1 == g2 {
             return true;
-        }
-
-        if !next_permutation(&mut p) {
-            break;
         }
     }
 
