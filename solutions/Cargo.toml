@@ -587,3 +587,19 @@ path = "weak_takahashi.rs"
 name = "rook_path"
 path = "rook_path.rs"
 
+[[bin]]
+name = "exactly_n_points"
+path = "exactly_n_points.rs"
+
+[[bin]]
+name = "honestorunkind2"
+path = "honestorunkind2.rs"
+
+[[bin]]
+name = "arc_wrecker_2"
+path = "arc_wrecker_2.rs"
+
+[[bin]]
+name = "palindrome_decomposition"
+path = "palindrome_decomposition.rs"
+
