@@ -611,3 +611,23 @@ path = "sorting_queries.rs"
 name = "through_path"
 path = "through_path.rs"
 
+[[bin]]
+name = "permutation_grid"
+path = "permutation_grid.rs"
+
+[[bin]]
+name = "shift_and_reverse"
+path = "shift_and_reverse.rs"
+
+[[bin]]
+name = "yet_another_die_game"
+path = "yet_another_die_game.rs"
+
+[[bin]]
+name = "scc_puzzle"
+path = "scc_puzzle.rs"
+
+[[bin]]
+name = "redundant_redundancy"
+path = "redundant_redundancy.rs"
+
