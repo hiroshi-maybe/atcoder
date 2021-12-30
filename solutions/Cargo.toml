@@ -631,3 +631,11 @@ path = "scc_puzzle.rs"
 name = "redundant_redundancy"
 path = "redundant_redundancy.rs"
 
+[[bin]]
+name = "sigma_k_0_10_100_floor_x_10k"
+path = "sigma_k_0_10_100_floor_x_10k.rs"
+
+[[bin]]
+name = "p_cas_card_and_takahashi"
+path = "p_cas_card_and_takahashi.rs"
+
