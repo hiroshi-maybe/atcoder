@@ -639,3 +639,11 @@ path = "sigma_k_0_10_100_floor_x_10k.rs"
 name = "p_cas_card_and_takahashi"
 path = "p_cas_card_and_takahashi.rs"
 
+[[bin]]
+name = "special_subsets"
+path = "special_subsets.rs"
+
+[[bin]]
+name = "pilot"
+path = "pilot.rs"
+
