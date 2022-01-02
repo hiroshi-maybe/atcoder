@@ -647,3 +647,19 @@ path = "special_subsets.rs"
 name = "pilot"
 path = "pilot.rs"
 
+[[bin]]
+name = "destruction"
+path = "destruction.rs"
+
+[[bin]]
+name = "crossfree_matching"
+path = "crossfree_matching.rs"
+
+[[bin]]
+name = "clan_migration"
+path = "clan_migration.rs"
+
+[[bin]]
+name = "8_puzzle_on_graph"
+path = "8_puzzle_on_graph.rs"
+
