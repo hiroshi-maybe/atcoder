@@ -679,3 +679,7 @@ path = "shapes.rs"
 name = "k_cakes"
 path = "k_cakes.rs"
 
+[[bin]]
+name = "bouquet"
+path = "bouquet.rs"
+
