@@ -663,3 +663,19 @@ path = "clan_migration.rs"
 name = "8_puzzle_on_graph"
 path = "8_puzzle_on_graph.rs"
 
+[[bin]]
+name = "striped_pattern"
+path = "striped_pattern.rs"
+
+[[bin]]
+name = "knight"
+path = "knight.rs"
+
+[[bin]]
+name = "shapes"
+path = "shapes.rs"
+
+[[bin]]
+name = "k_cakes"
+path = "k_cakes.rs"
+
