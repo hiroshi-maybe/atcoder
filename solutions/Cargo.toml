@@ -683,3 +683,43 @@ path = "k_cakes.rs"
 name = "bouquet"
 path = "bouquet.rs"
 
+[[bin]]
+name = "graph_destruction"
+path = "graph_destruction.rs"
+
+[[bin]]
+name = "crested_ibis_vs_monster"
+path = "crested_ibis_vs_monster.rs"
+
+[[bin]]
+name = "non_monotonous_graph"
+path = "non_monotonous_graph.rs"
+
+[[bin]]
+name = "bfs"
+path = "bfs.rs"
+
+[[bin]]
+name = "weird_function"
+path = "weird_function.rs"
+
+[[bin]]
+name = "longest_segment"
+path = "longest_segment.rs"
+
+[[bin]]
+name = "happy_new_year"
+path = "happy_new_year.rs"
+
+[[bin]]
+name = "prefix_kth_max"
+path = "prefix_kth_max.rs"
+
+[[bin]]
+name = "arithmetic_number"
+path = "arithmetic_number.rs"
+
+[[bin]]
+name = "reordering"
+path = "reordering.rs"
+
