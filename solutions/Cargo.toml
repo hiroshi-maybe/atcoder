@@ -723,3 +723,11 @@ path = "arithmetic_number.rs"
 name = "reordering"
 path = "reordering.rs"
 
+[[bin]]
+name = "euclidean_algorithm"
+path = "euclidean_algorithm.rs"
+
+[[bin]]
+name = "pair_of_balls"
+path = "pair_of_balls.rs"
+
