@@ -731,3 +731,31 @@ path = "euclidean_algorithm.rs"
 name = "pair_of_balls"
 path = "pair_of_balls.rs"
 
+[[bin]]
+name = "bridge"
+path = "bridge.rs"
+
+[[bin]]
+name = "journey"
+path = "journey.rs"
+
+[[bin]]
+name = "rotate_2"
+path = "rotate_2.rs"
+
+[[bin]]
+name = "climbing_takahashi"
+path = "climbing_takahashi.rs"
+
+[[bin]]
+name = "the_kth_time_query"
+path = "the_kth_time_query.rs"
+
+[[bin]]
+name = "multiply_and_rotate"
+path = "multiply_and_rotate.rs"
+
+[[bin]]
+name = "mst__1"
+path = "mst__1.rs"
+
