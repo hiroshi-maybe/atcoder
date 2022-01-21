@@ -759,3 +759,11 @@ path = "multiply_and_rotate.rs"
 name = "mst__1"
 path = "mst__1.rs"
 
+[[bin]]
+name = "royal_straight_flush"
+path = "royal_straight_flush.rs"
+
+[[bin]]
+name = "amusement_park"
+path = "amusement_park.rs"
+
