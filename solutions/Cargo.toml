@@ -767,3 +767,63 @@ path = "royal_straight_flush.rs"
 name = "amusement_park"
 path = "amusement_park.rs"
 
+[[bin]]
+name = "erase_by_value"
+path = "erase_by_value.rs"
+
+[[bin]]
+name = "dividing_subsequence"
+path = "dividing_subsequence.rs"
+
+[[bin]]
+name = "row_column_sums"
+path = "row_column_sums.rs"
+
+[[bin]]
+name = "chukodai"
+path = "chukodai.rs"
+
+[[bin]]
+name = "who_is_missing"
+path = "who_is_missing.rs"
+
+[[bin]]
+name = "route_map"
+path = "route_map.rs"
+
+[[bin]]
+name = "dance"
+path = "dance.rs"
+
+[[bin]]
+name = "bridge_and_sheets"
+path = "bridge_and_sheets.rs"
+
+[[bin]]
+name = "reserve_or_reverse"
+path = "reserve_or_reverse.rs"
+
+[[bin]]
+name = "the_majority"
+path = "the_majority.rs"
+
+[[bin]]
+name = "not_overflow"
+path = "not_overflow.rs"
+
+[[bin]]
+name = "matrix_transposition"
+path = "matrix_transposition.rs"
+
+[[bin]]
+name = "kasaka"
+path = "kasaka.rs"
+
+[[bin]]
+name = "lr_insertion"
+path = "lr_insertion.rs"
+
+[[bin]]
+name = "skiing"
+path = "skiing.rs"
+
