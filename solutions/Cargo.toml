@@ -827,3 +827,11 @@ path = "lr_insertion.rs"
 name = "skiing"
 path = "skiing.rs"
 
+[[bin]]
+name = "low_resolution"
+path = "low_resolution.rs"
+
+[[bin]]
+name = "mex_min"
+path = "mex_min.rs"
+
