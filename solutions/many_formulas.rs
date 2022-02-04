@@ -48,23 +48,19 @@ mod bitmask {
 	pub struct BitMask(usize);
 	impl BitMask {
 		pub fn new(max_power_of_two: usize) -> BitMask { BitMask(max_power_of_two) }
-		pub fn iter(&self) -> BitMaskIterator { BitMaskIterator { cur: 0, max_power_of_two: self.0 } }
+		pub fn iter(&self) -> BitMaskIterator { BitMaskIterator(0..1<<self.0) }
 	}
 	impl IntoIterator for BitMask {
 		type Item = BitSet; type IntoIter = BitMaskIterator;
 		fn into_iter(self) -> Self::IntoIter { self.iter() }
 	}
-	pub struct BitMaskIterator { cur: usize, max_power_of_two: usize, }
+
+	//#[derive(IntoItarator)]
+	pub struct BitMaskIterator(std::ops::Range<usize>);
 	impl Iterator for BitMaskIterator {
 		type Item = BitSet;
 		fn next(&mut self) -> Option<Self::Item> {
-			if self.cur < 1 << self.max_power_of_two {
-				let bitset = self.cur;
-				self.cur += 1;
-				Some(BitSet(bitset))
-			} else {
-				None
-			}
+			self.0.next().map(|m| BitSet(m))
 		}
 	}
 
@@ -72,22 +68,18 @@ mod bitmask {
 	pub struct BitSet(usize);
 	impl BitSet {
 		pub fn ith(&self, i: usize) -> bool { (self.0 >> i) & 1 == 1 }
-		pub fn ones(&self) -> BitSetOnesIterator { BitSetOnesIterator { current_bit: 0, mask: *self } }
+		pub fn ones(&self) -> BitSetOnesIterator {
+			BitSetOnesIterator { set: BitSet(self.0), iter: 0..(self.0.count_ones() + self.0.count_zeros()) as usize }
+		 }
 	}
 	impl From<usize> for BitSet {
 		fn from(val: usize) -> BitSet { BitSet(val) }
 	}
-	pub struct BitSetOnesIterator { current_bit: usize, mask: BitSet }
+	pub struct BitSetOnesIterator { set: BitSet, iter: std::ops::Range<usize> }
 	impl Iterator for BitSetOnesIterator {
 		type Item = usize;
 		fn next(&mut self) -> Option<Self::Item> {
-			let len = (self.mask.0.count_ones() + self.mask.0.count_zeros()) as usize;
-			if let Some(next_bit) = (self.current_bit..len).find(|&i| self.mask.ith(i)) {
-				self.current_bit = next_bit + 1;
-				Some(next_bit)
-			} else {
-				None
-			}
+			let set = self.set; self.iter.find(|&i| set.ith(i))
 		}
 	}
 }
