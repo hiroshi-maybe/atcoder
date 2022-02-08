@@ -835,3 +835,27 @@ path = "low_resolution.rs"
 name = "mex_min"
 path = "mex_min.rs"
 
+[[bin]]
+name = "many_formulas"
+path = "many_formulas.rs"
+
+[[bin]]
+name = "exponential_or_quadratic"
+path = "exponential_or_quadratic.rs"
+
+[[bin]]
+name = "pizza"
+path = "pizza.rs"
+
+[[bin]]
+name = "digitnum"
+path = "digitnum.rs"
+
+[[bin]]
+name = "and_and_sum"
+path = "and_and_sum.rs"
+
+[[bin]]
+name = "range_sums"
+path = "range_sums.rs"
+
