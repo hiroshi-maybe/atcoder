@@ -859,3 +859,18 @@ path = "and_and_sum.rs"
 name = "range_sums"
 path = "range_sums.rs"
 
+[[bin]]
+name = "align"
+path = "align.rs"
+
+[[bin]]
+name = "a"
+path = "a.rs"
+[[bin]]
+name = "loor_ceil_decomposition"
+path = "loor_ceil_decomposition.rs"
+
+[[bin]]
+name = "sum_of_three_terms"
+path = "sum_of_three_terms.rs"
+
