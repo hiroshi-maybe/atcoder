@@ -874,3 +874,43 @@ path = "loor_ceil_decomposition.rs"
 name = "sum_of_three_terms"
 path = "sum_of_three_terms.rs"
 
+[[bin]]
+name = "horizon"
+path = "horizon.rs"
+
+[[bin]]
+name = "integer_division"
+path = "integer_division.rs"
+
+[[bin]]
+name = "knight_fork"
+path = "knight_fork.rs"
+
+[[bin]]
+name = "prime_sum_game"
+path = "prime_sum_game.rs"
+
+[[bin]]
+name = "subtree_kth_max"
+path = "subtree_kth_max.rs"
+
+[[bin]]
+name = "edge_checker"
+path = "edge_checker.rs"
+
+[[bin]]
+name = "count_distinct_integers"
+path = "count_distinct_integers.rs"
+
+[[bin]]
+name = "jumping_takahashi"
+path = "jumping_takahashi.rs"
+
+[[bin]]
+name = "strange_balls"
+path = "strange_balls.rs"
+
+[[bin]]
+name = "ranges_on_tree"
+path = "ranges_on_tree.rs"
+
