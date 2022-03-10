@@ -914,3 +914,59 @@ path = "strange_balls.rs"
 name = "ranges_on_tree"
 path = "ranges_on_tree.rs"
 
+[[bin]]
+name = "digit_machine"
+path = "digit_machine.rs"
+
+[[bin]]
+name = "pasta"
+path = "pasta.rs"
+
+[[bin]]
+name = "connect_6"
+path = "connect_6.rs"
+
+[[bin]]
+name = "sequence_query"
+path = "sequence_query.rs"
+
+[[bin]]
+name = "putting_candies"
+path = "putting_candies.rs"
+
+[[bin]]
+name = "skate"
+path = "skate.rs"
+
+[[bin]]
+name = "a__bb"
+path = "a__bb.rs"
+
+[[bin]]
+name = "a_bb"
+path = "a_bb.rs"
+
+[[bin]]
+name = "triple_shift"
+path = "triple_shift.rs"
+
+[[bin]]
+name = "tshirt"
+path = "tshirt.rs"
+
+[[bin]]
+name = "minimize_ordering"
+path = "minimize_ordering.rs"
+
+[[bin]]
+name = "1111gal_password"
+path = "1111gal_password.rs"
+
+[[bin]]
+name = "abc_transform"
+path = "abc_transform.rs"
+
+[[bin]]
+name = "a_x_a"
+path = "a_x_a.rs"
+
