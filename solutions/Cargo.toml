@@ -970,3 +970,23 @@ path = "abc_transform.rs"
 name = "a_x_a"
 path = "a_x_a.rs"
 
+[[bin]]
+name = "shampoo"
+path = "shampoo.rs"
+
+[[bin]]
+name = "hit_and_blow"
+path = "hit_and_blow.rs"
+
+[[bin]]
+name = "collision_2"
+path = "collision_2.rs"
+
+[[bin]]
+name = "moves_on_binary_tree"
+path = "moves_on_binary_tree.rs"
+
+[[bin]]
+name = "edge_deletion"
+path = "edge_deletion.rs"
+
