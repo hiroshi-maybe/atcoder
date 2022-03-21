@@ -990,3 +990,31 @@ path = "moves_on_binary_tree.rs"
 name = "edge_deletion"
 path = "edge_deletion.rs"
 
+[[bin]]
+name = "coprime_pair"
+path = "coprime_pair.rs"
+
+[[bin]]
+name = "count_1s"
+path = "count_1s.rs"
+
+[[bin]]
+name = "last_letter"
+path = "last_letter.rs"
+
+[[bin]]
+name = "go_straight_and_turn_right"
+path = "go_straight_and_turn_right.rs"
+
+[[bin]]
+name = "yamanote_line_game"
+path = "yamanote_line_game.rs"
+
+[[bin]]
+name = "swap_hats"
+path = "swap_hats.rs"
+
+[[bin]]
+name = "king_bombee"
+path = "king_bombee.rs"
+
