@@ -1018,3 +1018,23 @@ path = "swap_hats.rs"
 name = "king_bombee"
 path = "king_bombee.rs"
 
+[[bin]]
+name = "four_points"
+path = "four_points.rs"
+
+[[bin]]
+name = "get_closer"
+path = "get_closer.rs"
+
+[[bin]]
+name = "coupon"
+path = "coupon.rs"
+
+[[bin]]
+name = "2variable_function"
+path = "2variable_function.rs"
+
+[[bin]]
+name = "bishop_2"
+path = "bishop_2.rs"
+
