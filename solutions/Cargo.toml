@@ -1038,3 +1038,11 @@ path = "2variable_function.rs"
 name = "bishop_2"
 path = "bishop_2.rs"
 
+[[bin]]
+name = "larger_score"
+path = "larger_score.rs"
+
+[[bin]]
+name = "01_generation"
+path = "01_generation.rs"
+
