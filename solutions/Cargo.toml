@@ -1046,3 +1046,23 @@ path = "larger_score.rs"
 name = "01_generation"
 path = "01_generation.rs"
 
+[[bin]]
+name = "lacked_number"
+path = "lacked_number.rs"
+
+[[bin]]
+name = "slimes_2"
+path = "slimes_2.rs"
+
+[[bin]]
+name = "dice_sum"
+path = "dice_sum.rs"
+
+[[bin]]
+name = "range_count_query"
+path = "range_count_query.rs"
+
+[[bin]]
+name = "kcolinear_line"
+path = "kcolinear_line.rs"
+
