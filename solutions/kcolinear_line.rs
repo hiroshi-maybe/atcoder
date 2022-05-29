@@ -16,17 +16,59 @@ use std::collections::*;
 /// https://atcoder.jp/contests/abc248/editorial/3792
 ///
 
-fn det(x1: i64, y1: i64, x2: i64, y2: i64) -> i64 {
-    x1 * y2 - y1 * x2
-}
+// region: geometry
 
-fn det_origin(x0: i64, y0: i64, x1: i64, y1: i64, x2: i64, y2: i64) -> i64 {
-    det(x1 - x0, y1 - y0, x2 - x0, y2 - y0)
+#[rustfmt::skip]
+#[allow(dead_code)]
+pub mod geometry {
+    use std::ops::*;
+
+    #[derive(Copy, Clone, Debug, Default, Hash, PartialEq, Eq, PartialOrd, Ord)]
+    pub struct Point<T> { pub x: T, pub y: T }
+    impl<T> Point<T> {
+        pub fn new(x: T, y: T) -> Self { Point { x, y } }
+    }
+    impl<T: Mul<Output = T> + Sub<Output = T> + Copy> Point<T> {
+        pub fn det<U: Into<Point<T>>>(&self, other: U) -> T {
+            let other = other.into();
+            self.x * other.y - self.y * other.x
+        }
+        pub fn det_origin<U1: Into<Point<T>>, U2: Into<Point<T>>>(self, other1: U1, other2: U2) -> T {
+            let (u, v) = (other1.into() - self, other2.into() - self);
+            u.det(v)
+        }
+    }
+    impl<T> From<(T, T)> for Point<T> {
+        fn from(t: (T, T)) -> Point<T> { Point::<T>::new(t.0, t.1) }
+    }
+    impl<U: Into<Point<T>>, T: Add<Output = T>> Add<U> for Point<T> {
+        type Output = Self;
+        fn add(self, other: U) -> Self {
+            let other = other.into();
+            Self::new(self.x + other.x, self.y + other.y)
+        }
+    }
+    impl<U: Into<Point<T>>, T: Sub<Output = T>> Sub<U> for Point<T> {
+        type Output = Self;
+        fn sub(self, other: U) -> Self {
+            let other = other.into();
+            Self::new(self.x - other.x, self.y - other.y)
+        }
+    }
+    impl<U: Into<Point<T>>, T: Add<Output = T> + Copy> AddAssign<U> for Point<T> {
+        fn add_assign(&mut self, other: U) { *self = *self + other; }
+    }
+    impl<U: Into<Point<T>>, T: Sub<Output = T> + Copy> SubAssign<U> for Point<T> {
+        fn sub_assign(&mut self, other: U) { *self = *self - other; }
+    }
 }
+pub use geometry::Point;
+
+// endregion: geometry
 
 fn solve() -> Option<usize> {
     let (n, k) = readln!(usize, usize);
-    let xys = readlns!(i64, i64; n);
+    let xys = readlns!(i64, i64; n).iter().map(|&(x,y)| Point::new(x,y)).collect_vec();
 
     if k == 1 {
         return None;
@@ -35,17 +77,17 @@ fn solve() -> Option<usize> {
     let mut viz = vvec!(false; n; n);
     let mut res = 0;
     for i in 0..n {
-        let (x0, y0) = (xys[i].0, xys[i].1);
+        let p0 = xys[i];
         for j in 0..i {
             if viz[i][j] {
                 continue;
             }
             let mut ps = vec![i, j];
 
-            let (x1, y1) = (xys[j].0, xys[j].1);
+            let p1=xys[j];
             for k in (0..n).filter(|&k| k != i && k != j) {
-                let (x2, y2) = (xys[k].0, xys[k].1);
-                if det_origin(x0, y0, x1, y1, x2, y2) == 0 {
+                let p2=xys[k];
+                if p0.det_origin(p1,p2) == 0 {
                     ps.push(k);
                 }
             }
@@ -160,47 +202,6 @@ fn main() {
         puts!("Infinity");
     }
 }
-
-// region: union_find
-
-#[rustfmt::skip]
-#[allow(dead_code)]
-mod uf {
-	pub struct UnionFind {
-		pub group_count: usize,
-		par_or_size: Vec<isize>,
-	}
-	impl UnionFind {
-		pub fn new(n: usize) -> UnionFind {
-			UnionFind { group_count: n, par_or_size: vec![-1; n], }
-		}
-		pub fn root(&mut self, x: usize) -> usize {
-			if self.par_or_size[x] < 0 as isize { x } else {
-				self.par_or_size[x] = self.root(self.par_or_size[x] as usize) as isize;
-				self.par_or_size[x] as usize
-			}
-		}
-		pub fn same_set(&mut self, x: usize, y: usize) -> bool { self.root(x) == self.root(y) }
-		pub fn size(&mut self, x: usize) -> usize {
-			let root = self.root(x); -self.par_or_size[root] as usize
-		}
-		pub fn merge(&mut self, x: usize, y: usize) -> usize {
-			let (mut p, mut c) = (self.root(x), self.root(y));
-			if p == c { return p; }
-			if -self.par_or_size[p] < -self.par_or_size[c] { std::mem::swap(&mut p, &mut c); }
-			self.group_count -= 1;
-			self.par_or_size[p] += self.par_or_size[c];
-			self.par_or_size[c] = p as isize;
-			p
-		}
-		pub fn roots(&mut self) -> Vec<usize> {
-			(0..self.par_or_size.len()).filter(|&u| self.root(u) == u).collect::<Vec<_>>()
-		}
-	}
-}
-pub use uf::UnionFind;
-
-// endregion: union_find
 
 // region: gcd
 
