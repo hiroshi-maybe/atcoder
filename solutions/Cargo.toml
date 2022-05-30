@@ -1066,3 +1066,11 @@ path = "range_count_query.rs"
 name = "kcolinear_line"
 path = "kcolinear_line.rs"
 
+[[bin]]
+name = "periodic_number"
+path = "periodic_number.rs"
+
+[[bin]]
+name = "increasing_prefix_xor"
+path = "increasing_prefix_xor.rs"
+
