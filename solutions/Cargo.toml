@@ -1074,3 +1074,27 @@ path = "periodic_number.rs"
 name = "increasing_prefix_xor"
 path = "increasing_prefix_xor.rs"
 
+[[bin]]
+name = "last_two_digits"
+path = "last_two_digits.rs"
+
+[[bin]]
+name = "practical_computing"
+path = "practical_computing.rs"
+
+[[bin]]
+name = "k_swap"
+path = "k_swap.rs"
+
+[[bin]]
+name = "together_square"
+path = "together_square.rs"
+
+[[bin]]
+name = "small_d_and_k"
+path = "small_d_and_k.rs"
+
+[[bin]]
+name = "rectangle_gcd"
+path = "rectangle_gcd.rs"
+
