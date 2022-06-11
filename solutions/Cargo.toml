@@ -1098,3 +1098,23 @@ path = "small_d_and_k.rs"
 name = "rectangle_gcd"
 path = "rectangle_gcd.rs"
 
+[[bin]]
+name = "you_should_output_arc_though_this_is_abc"
+path = "you_should_output_arc_though_this_is_abc.rs"
+
+[[bin]]
+name = "light_it_up"
+path = "light_it_up.rs"
+
+[[bin]]
+name = "1_operation_1"
+path = "1_operation_1.rs"
+
+[[bin]]
+name = "1_operation_2"
+path = "1_operation_2.rs"
+
+[[bin]]
+name = "lucky_numbers"
+path = "lucky_numbers.rs"
+
