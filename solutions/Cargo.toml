@@ -1118,3 +1118,23 @@ path = "1_operation_2.rs"
 name = "lucky_numbers"
 path = "lucky_numbers.rs"
 
+[[bin]]
+name = "2n"
+path = "2n.rs"
+
+[[bin]]
+name = "batters"
+path = "batters.rs"
+
+[[bin]]
+name = "filling_3x3_array"
+path = "filling_3x3_array.rs"
+
+[[bin]]
+name = "union_of_interval"
+path = "union_of_interval.rs"
+
+[[bin]]
+name = "takahashis_anguish"
+path = "takahashis_anguish.rs"
+
