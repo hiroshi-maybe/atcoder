@@ -1138,3 +1138,11 @@ path = "union_of_interval.rs"
 name = "takahashis_anguish"
 path = "takahashis_anguish.rs"
 
+[[bin]]
+name = "reverse_and_minimize"
+path = "reverse_and_minimize.rs"
+
+[[bin]]
+name = "unbalanced_squares"
+path = "unbalanced_squares.rs"
+
