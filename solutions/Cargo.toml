@@ -1146,3 +1146,19 @@ path = "reverse_and_minimize.rs"
 name = "unbalanced_squares"
 path = "unbalanced_squares.rs"
 
+[[bin]]
+name = "a_to_z_string_2"
+path = "a_to_z_string_2.rs"
+
+[[bin]]
+name = "1d_pawn"
+path = "1d_pawn.rs"
+
+[[bin]]
+name = "robot_takahashi"
+path = "robot_takahashi.rs"
+
+[[bin]]
+name = "jumping_takahashi_2"
+path = "jumping_takahashi_2.rs"
+
