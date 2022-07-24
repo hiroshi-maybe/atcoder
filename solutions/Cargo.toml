@@ -1162,3 +1162,23 @@ path = "robot_takahashi.rs"
 name = "jumping_takahashi_2"
 path = "jumping_takahashi_2.rs"
 
+[[bin]]
+name = "growth_record"
+path = "growth_record.rs"
+
+[[bin]]
+name = "counterclockwise_rotation"
+path = "counterclockwise_rotation.rs"
+
+[[bin]]
+name = "xx_to_xxx"
+path = "xx_to_xxx.rs"
+
+[[bin]]
+name = "circumferences"
+path = "circumferences.rs"
+
+[[bin]]
+name = "lcm_on_whiteboard"
+path = "lcm_on_whiteboard.rs"
+
