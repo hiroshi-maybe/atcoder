@@ -1182,3 +1182,23 @@ path = "circumferences.rs"
 name = "lcm_on_whiteboard"
 path = "lcm_on_whiteboard.rs"
 
+[[bin]]
+name = "intersection_2"
+path = "intersection_2.rs"
+
+[[bin]]
+name = "tournament_result"
+path = "tournament_result.rs"
+
+[[bin]]
+name = "newfolder_1"
+path = "newfolder_1.rs"
+
+[[bin]]
+name = "flipping_and_bonus"
+path = "flipping_and_bonus.rs"
+
+[[bin]]
+name = "many_operations"
+path = "many_operations.rs"
+
