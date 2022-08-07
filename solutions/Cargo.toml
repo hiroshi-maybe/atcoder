@@ -1202,3 +1202,23 @@ path = "flipping_and_bonus.rs"
 name = "many_operations"
 path = "many_operations.rs"
 
+[[bin]]
+name = "ab_palindrome"
+path = "ab_palindrome.rs"
+
+[[bin]]
+name = "full_house"
+path = "full_house.rs"
+
+[[bin]]
+name = "ancestor"
+path = "ancestor.rs"
+
+[[bin]]
+name = "monotonically_increasing"
+path = "monotonically_increasing.rs"
+
+[[bin]]
+name = "left_right_operation"
+path = "left_right_operation.rs"
+
