@@ -1222,3 +1222,19 @@ path = "monotonically_increasing.rs"
 name = "left_right_operation"
 path = "left_right_operation.rs"
 
+[[bin]]
+name = "atcodersubstr"
+path = "atcodersubstr.rs"
+
+[[bin]]
+name = "nice_grid"
+path = "nice_grid.rs"
+
+[[bin]]
+name = "matrix_reducing"
+path = "matrix_reducing.rs"
+
+[[bin]]
+name = "redocta_swap_ii1"
+path = "redocta_swap_ii1.rs"
+
