@@ -1238,3 +1238,7 @@ path = "matrix_reducing.rs"
 name = "redocta_swap_ii1"
 path = "redocta_swap_ii1.rs"
 
+[[bin]]
+name = "blackout_2"
+path = "blackout_2.rs"
+
