@@ -1242,3 +1242,19 @@ path = "redocta_swap_ii1.rs"
 name = "blackout_2"
 path = "blackout_2.rs"
 
+[[bin]]
+name = "saturday"
+path = "saturday.rs"
+
+[[bin]]
+name = "split"
+path = "split.rs"
+
+[[bin]]
+name = "index__a_continuous_ver"
+path = "index__a_continuous_ver.rs"
+
+[[bin]]
+name = "index__a_not_continuous_ver"
+path = "index__a_not_continuous_ver.rs"
+
