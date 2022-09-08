@@ -1258,3 +1258,11 @@ path = "index__a_continuous_ver.rs"
 name = "index__a_not_continuous_ver"
 path = "index__a_not_continuous_ver.rs"
 
+[[bin]]
+name = "erasing_vertices_2"
+path = "erasing_vertices_2.rs"
+
+[[bin]]
+name = "max_mod_min"
+path = "max_mod_min.rs"
+
