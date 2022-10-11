@@ -1282,3 +1282,31 @@ path = "simple_path.rs"
 name = "stones_2"
 path = "stones_2.rs"
 
+[[bin]]
+name = "three_cards"
+path = "three_cards.rs"
+
+[[bin]]
+name = "plus_and_and"
+path = "plus_and_and.rs"
+
+[[bin]]
+name = "integer_sum"
+path = "integer_sum.rs"
+
+[[bin]]
+name = "everyone_is_friends"
+path = "everyone_is_friends.rs"
+
+[[bin]]
+name = "max_even"
+path = "max_even.rs"
+
+[[bin]]
+name = "root_m_leaper"
+path = "root_m_leaper.rs"
+
+[[bin]]
+name = "add_and_mex"
+path = "add_and_mex.rs"
+
