@@ -1310,3 +1310,23 @@ path = "root_m_leaper.rs"
 name = "add_and_mex"
 path = "add_and_mex.rs"
 
+[[bin]]
+name = "a_recursive_function"
+path = "a_recursive_function.rs"
+
+[[bin]]
+name = "broken_rounding"
+path = "broken_rounding.rs"
+
+[[bin]]
+name = "k1th_largest_number"
+path = "k1th_largest_number.rs"
+
+[[bin]]
+name = "lrud_instructions"
+path = "lrud_instructions.rs"
+
+[[bin]]
+name = "notebook"
+path = "notebook.rs"
+
