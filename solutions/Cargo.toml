@@ -1330,3 +1330,23 @@ path = "lrud_instructions.rs"
 name = "notebook"
 path = "notebook.rs"
 
+[[bin]]
+name = "batting_average"
+path = "batting_average.rs"
+
+[[bin]]
+name = "line_sensor"
+path = "line_sensor.rs"
+
+[[bin]]
+name = "ameba_2"
+path = "ameba_2.rs"
+
+[[bin]]
+name = "robot_arms_2"
+path = "robot_arms_2.rs"
+
+[[bin]]
+name = "booster"
+path = "booster.rs"
+
