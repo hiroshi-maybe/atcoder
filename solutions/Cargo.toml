@@ -1350,3 +1350,23 @@ path = "robot_arms_2.rs"
 name = "booster"
 path = "booster.rs"
 
+[[bin]]
+name = "find_takahashi"
+path = "find_takahashi.rs"
+
+[[bin]]
+name = "abcdef"
+path = "abcdef.rs"
+
+[[bin]]
+name = "counting_squares"
+path = "counting_squares.rs"
+
+[[bin]]
+name = "yet_another_recursive_function"
+path = "yet_another_recursive_function.rs"
+
+[[bin]]
+name = "sugoroku_4"
+path = "sugoroku_4.rs"
+
