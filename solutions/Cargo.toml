@@ -1370,3 +1370,27 @@ path = "yet_another_recursive_function.rs"
 name = "sugoroku_4"
 path = "sugoroku_4.rs"
 
+[[bin]]
+name = "rightmost"
+path = "rightmost.rs"
+
+[[bin]]
+name = "adjacency_list"
+path = "adjacency_list.rs"
+
+[[bin]]
+name = "previous_permutation"
+path = "previous_permutation.rs"
+
+[[bin]]
+name = "divide_by_2_or_3"
+path = "divide_by_2_or_3.rs"
+
+[[bin]]
+name = "round_trip"
+path = "round_trip.rs"
+
+[[bin]]
+name = "double_chance"
+path = "double_chance.rs"
+
