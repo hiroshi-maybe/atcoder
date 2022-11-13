@@ -1394,3 +1394,27 @@ path = "round_trip.rs"
 name = "double_chance"
 path = "double_chance.rs"
 
+[[bin]]
+name = "1"
+path = "1.rs"
+
+[[bin]]
+name = "permutation_inverse_1"
+path = "permutation_inverse_1.rs"
+
+[[bin]]
+name = "playing_cards_validation"
+path = "playing_cards_validation.rs"
+
+[[bin]]
+name = "ladder_takahashi"
+path = "ladder_takahashi.rs"
+
+[[bin]]
+name = "takahashis_solitaire"
+path = "takahashis_solitaire.rs"
+
+[[bin]]
+name = "crystal_switches"
+path = "crystal_switches.rs"
+
