@@ -25,7 +25,7 @@ fn main() {
 
     dbgln!(cnt.len());
     for a in 0..MAXA {
-        let mut x = min(k, cnt[a]);
+        let x = min(k, cnt[a]);
         k -= x;
         if k == 0 {
             puts!("{}", a);

@@ -17,7 +17,7 @@ fn dist(i: usize, j: usize, xys: &Vec<(i64, i64)>) -> i64 {
 }
 
 fn solve() -> f64 {
-    let (n, k) = readln!(usize, usize);
+    let (n, _) = readln!(usize, usize);
     let a = readln!([usize1]);
     let xys = readlns!(i64, i64; n);
 
