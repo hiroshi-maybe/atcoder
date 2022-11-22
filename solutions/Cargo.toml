@@ -1418,3 +1418,23 @@ path = "takahashis_solitaire.rs"
 name = "crystal_switches"
 path = "crystal_switches.rs"
 
+[[bin]]
+name = "shift"
+path = "shift.rs"
+
+[[bin]]
+name = "misjudge_the_time"
+path = "misjudge_the_time.rs"
+
+[[bin]]
+name = "ff"
+path = "ff.rs"
+
+[[bin]]
+name = "all_assign_point_add"
+path = "all_assign_point_add.rs"
+
+[[bin]]
+name = "grid_filling"
+path = "grid_filling.rs"
+
