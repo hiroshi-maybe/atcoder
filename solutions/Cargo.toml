@@ -1438,3 +1438,23 @@ path = "all_assign_point_add.rs"
 name = "grid_filling"
 path = "grid_filling.rs"
 
+[[bin]]
+name = "wwwvvvvvv"
+path = "wwwvvvvvv.rs"
+
+[[bin]]
+name = "lookup"
+path = "lookup.rs"
+
+[[bin]]
+name = "random"
+path = "random.rs"
+
+[[bin]]
+name = "freefall"
+path = "freefall.rs"
+
+[[bin]]
+name = "cheating_amidakuji"
+path = "cheating_amidakuji.rs"
+
