@@ -1,4 +1,6 @@
 #![allow(unused_macros, unused_imports)]
+use rand::thread_rng;
+use rand::Rng;
 use std::cmp::*;
 use std::collections::*;
 
@@ -17,19 +19,9 @@ use std::collections::*;
 /// https://atcoder.jp/contests/abc280/editorial/5330
 ///
 
-fn primes_to_map(ps: &Vec<i64>) -> HashMap<i64, i64> {
-    let mut map = HashMap::new();
-    for &p in ps {
-        let e = map.entry(p).or_insert(0);
-        *e += 1;
-    }
-    map
-}
-
-fn solve() -> i64 {
-    let k = readln!(i64);
-    let k_primes = k.prime_facts();
-    let k_prime_map = primes_to_map(&k_primes);
+fn solve(k: i64) -> i64 {
+    let k_prime_map = k.prime_facts_map();
+    // dbgln!(k_prime_map);
 
     let mut res = 0;
     for (p, k_cnt) in k_prime_map {
@@ -51,9 +43,22 @@ fn solve() -> i64 {
 
 fn main() {
     setup_out!(put, puts);
+    let k = readln!(i64);
 
-    let res = solve();
+    let res = solve(k);
     puts!("{}", res);
+}
+
+#[test]
+fn test_random() {
+    loop {
+        let mut rng = thread_rng();
+        let k = rng.gen_range(2, 10i64.pow(12));
+
+        dbgln!(k);
+        let res = solve(k);
+        dbgln!(k, res);
+    }
 }
 
 // region: int_fact
@@ -61,9 +66,11 @@ fn main() {
 #[rustfmt::skip]
 #[allow(dead_code)]
 mod int_fact {
+	use std::collections::HashMap;
 	pub trait IntFactorial where Self: Sized {
 		fn divisors(&self) -> Vec<Self>;
 		fn prime_facts(&self) -> Vec<Self>;
+		fn prime_facts_map(&self) -> HashMap<Self, isize>;
 	}
 	macro_rules! impl_int_fact { ($integer:ty) => {
 		impl IntFactorial for $integer {
@@ -87,6 +94,15 @@ mod int_fact {
 				}
 				if n > 1 { res.push(n); }
 				res
+			}
+			fn prime_facts_map(&self) -> HashMap<Self, isize> {
+				let ps = self.prime_facts();
+				let mut map = HashMap::new();
+				for p in ps {
+					let e = map.entry(p).or_insert(0);
+					*e += 1;
+				}
+				map
 			}
 		}
 	}; }
