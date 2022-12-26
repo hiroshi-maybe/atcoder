@@ -1458,3 +1458,23 @@ path = "freefall.rs"
 name = "cheating_amidakuji"
 path = "cheating_amidakuji.rs"
 
+[[bin]]
+name = "pawn_on_a_grid"
+path = "pawn_on_a_grid.rs"
+
+[[bin]]
+name = "inverse_prefix_sum"
+path = "inverse_prefix_sum.rs"
+
+[[bin]]
+name = "extra_character"
+path = "extra_character.rs"
+
+[[bin]]
+name = "factorial_and_multiple"
+path = "factorial_and_multiple.rs"
+
+[[bin]]
+name = "critical_hit"
+path = "critical_hit.rs"
+
