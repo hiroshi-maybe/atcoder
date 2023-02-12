@@ -1478,3 +1478,23 @@ path = "factorial_and_multiple.rs"
 name = "critical_hit"
 path = "critical_hit.rs"
 
+[[bin]]
+name = "majority"
+path = "majority.rs"
+
+[[bin]]
+name = "postal_card"
+path = "postal_card.rs"
+
+[[bin]]
+name = "path_graph"
+path = "path_graph.rs"
+
+[[bin]]
+name = "match_or_not"
+path = "match_or_not.rs"
+
+[[bin]]
+name = "karuta"
+path = "karuta.rs"
+
