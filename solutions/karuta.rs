@@ -51,20 +51,9 @@ fn solve_trie() -> Vec<usize> {
 
     s.iter()
         .map(|s| {
-            let mut res = 0;
-            let cs = s.encode::<LowerAlphabetSet>();
-            let mut n = &trie.root_node;
-            while res < cs.len() {
-                // dbgln!(res, cs);
-                let child = n.children[cs[res] as usize].as_ref().unwrap();
-                if child.matched_string_cnt > 1 {
-                    res += 1;
-                    n = child;
-                } else {
-                    break;
-                }
-            }
-            res
+            trie.node_iter(s)
+                .take_while(|&n| n.matched_string_cnt > 1)
+                .count()
         })
         .collect_vec()
 }
@@ -81,143 +70,184 @@ fn main() {
 // region: trie
 #[allow(dead_code)]
 mod trie {
-    use std::collections::HashSet;
-    use std::marker::PhantomData;
-    pub type LowerAlphabetTrie = Trie<LowerAlphabetSet>;
-    pub struct Trie<C: CharSet> {
-        pub root_node: Box<TrieNode<C>>,
-        _marker: PhantomData<C>,
-    }
+	use std::collections::HashSet;
+	use std::marker::PhantomData;
+	pub type LowerAlphabetTrie = Trie<LowerAlphabetSet>;
+	pub struct Trie<C: CharSet> {
+		pub root_node: Box<TrieNode<C>>,
+		_marker: PhantomData<C>,
+	}
 
-    pub trait CharSet: Copy {
-        const DAT_SIZE: usize;
-        const BASE: u8;
-        fn char_to_u8(c: char) -> u8 {
-            c as u8 - Self::BASE
-        }
-    }
+	pub trait CharSet: Copy {
+		const DAT_SIZE: usize;
+		const BASE: u8;
+		fn char_to_u8(c: char) -> u8 {
+			c as u8 - Self::BASE
+		}
+	}
 
-    #[derive(Copy, Clone)]
-    pub struct LowerAlphabetSet;
-    impl CharSet for LowerAlphabetSet {
-        const DAT_SIZE: usize = 26;
-        const BASE: u8 = b'a';
-    }
+	pub struct TrieNodeIterator<'a, C: CharSet> {
+		str: Vec<u8>,
+		cur_pos: usize,
+		cur_node: &'a Box<TrieNode<C>>,
+	}
+	impl<'a, C> Iterator for TrieNodeIterator<'a, C>
+	where
+		C: CharSet,
+	{
+		type Item = &'a TrieNode<C>;
+		fn next(&mut self) -> Option<Self::Item> {
+			if let Some(child) = self
+				.str
+				.get(self.cur_pos)
+				.and_then(|&c| self.cur_node.children[c as usize].as_ref())
+			{
+				self.cur_node = child;
+				self.cur_pos += 1;
+				Some(child)
+			} else {
+				None
+			}
+		}
+	}
 
-    pub trait StringEncodable {
-        fn encode<C: CharSet>(&self) -> Vec<u8>;
-    }
+	#[derive(Copy, Clone, Debug)]
+	pub struct LowerAlphabetSet;
+	impl CharSet for LowerAlphabetSet {
+		const DAT_SIZE: usize = 26;
+		const BASE: u8 = b'a';
+	}
 
-    impl StringEncodable for &str {
-        fn encode<C: CharSet>(&self) -> Vec<u8> {
-            self.chars().map(|c| C::char_to_u8(c)).collect()
-        }
-    }
+	pub trait StringEncodable {
+		fn encode<C: CharSet>(&self) -> Vec<u8>;
+		fn char_count(&self) -> usize;
+	}
 
-    impl StringEncodable for Vec<char> {
-        fn encode<C: CharSet>(&self) -> Vec<u8> {
-            self.iter().map(|&c| C::char_to_u8(c)).collect()
-        }
-    }
+	impl StringEncodable for &str {
+		fn encode<C: CharSet>(&self) -> Vec<u8> {
+			self.chars().map(|c| C::char_to_u8(c)).collect()
+		}
 
-    impl StringEncodable for &Vec<char> {
-        fn encode<C: CharSet>(&self) -> Vec<u8> {
-            self.iter().map(|&c| C::char_to_u8(c)).collect()
-        }
-    }
+		fn char_count(&self) -> usize {
+			self.chars().count()
+		}
+	}
 
-    impl<C: CharSet> Trie<C> {
-        pub fn new() -> Self {
-            Trie {
-                root_node: Box::new(TrieNode::new()),
-                _marker: PhantomData,
-            }
-        }
+	impl StringEncodable for Vec<char> {
+		fn encode<C: CharSet>(&self) -> Vec<u8> {
+			self.iter().map(|&c| C::char_to_u8(c)).collect()
+		}
+		fn char_count(&self) -> usize {
+			self.len()
+		}
+	}
 
-        pub fn insert<S: StringEncodable>(&mut self, id: usize, str: S) {
-            let cs = str.encode::<C>();
-            self.root_node.insert(id, cs.as_slice())
-        }
+	impl StringEncodable for &Vec<char> {
+		fn encode<C: CharSet>(&self) -> Vec<u8> {
+			self.iter().map(|&c| C::char_to_u8(c)).collect()
+		}
 
-        pub fn erase<S: StringEncodable>(&mut self, id: usize, str: S) -> bool {
-            let cs = str.encode::<C>();
-            self.root_node.erase(id, cs.as_slice())
-        }
+		fn char_count(&self) -> usize {
+			self.len()
+		}
+	}
 
-        pub fn search<S: StringEncodable>(&self, str: S) -> Option<usize> {
-            let cs = str.encode::<C>();
-            let node = self.root_node.find(cs.as_slice());
-            node.and_then(|n| n.terminated_str_ids.iter().next().copied())
-        }
+	impl<C: CharSet> Trie<C> {
+		pub fn new() -> Self {
+			Trie {
+				root_node: Box::new(TrieNode::new()),
+				_marker: PhantomData,
+			}
+		}
 
-        pub fn prefix_cnt<S: StringEncodable>(&self, str: S) -> usize {
-            let cs = str.encode::<C>();
-            let node = self.root_node.find(cs.as_slice());
-            node.map_or(0, |n| n.matched_string_cnt)
-        }
-    }
+		pub fn insert<S: StringEncodable>(&mut self, id: usize, str: S) {
+			let cs = str.encode::<C>();
+			self.root_node.insert(id, cs.as_slice())
+		}
 
-    #[derive(Clone)]
-    pub struct TrieNode<C: CharSet> {
-        pub matched_string_cnt: usize, // # of strings in the subtree of the node
-        pub terminated_str_ids: HashSet<usize>, // IDs of strings ending here
-        pub children: Vec<Option<Box<TrieNode<C>>>>,
-        _marker: PhantomData<C>,
-    }
+		pub fn erase<S: StringEncodable>(&mut self, id: usize, str: S) -> bool {
+			let cs = str.encode::<C>();
+			self.root_node.erase(id, cs.as_slice())
+		}
 
-    impl<C: CharSet> TrieNode<C> {
-        const INIT: Option<Box<TrieNode<C>>> = None;
-        fn new() -> Self {
-            TrieNode {
-                matched_string_cnt: 0,
-                terminated_str_ids: HashSet::new(),
-                children: vec![Self::INIT; C::DAT_SIZE],
-                _marker: PhantomData,
-            }
-        }
+		pub fn search<S: StringEncodable>(&self, str: S) -> Option<usize> {
+			self.find(str)
+				.and_then(|n| n.terminated_str_ids.iter().next().copied())
+		}
 
-        fn insert(&mut self, id: usize, cs: &[u8]) {
-            self.matched_string_cnt += 1;
-            if let Some(c) = cs.first() {
-                let i = *c as usize;
-                if let Some(child) = self.children[i].as_mut() {
-                    child.insert(id, &cs[1..]);
-                } else {
-                    let mut child = Box::new(TrieNode::new());
-                    child.insert(id, &cs[1..]);
-                    self.children[i] = Option::Some(child);
-                }
-            } else {
-                self.terminated_str_ids.insert(id);
-            }
-        }
+		pub fn prefix_cnt<S: StringEncodable>(&self, str: S) -> usize {
+			self.find(str).map_or(0, |n| n.matched_string_cnt)
+		}
 
-        fn erase(&mut self, id: usize, cs: &[u8]) -> bool {
-            if let Some(c) = cs.first() {
-                let i = *c as usize;
-                if let Some(child) = self.children[i].as_mut() {
-                    child.erase(id, &cs[1..])
-                } else {
-                    false
-                }
-            } else {
-                self.terminated_str_ids.remove(&id)
-            }
-        }
+		pub fn find<S: StringEncodable>(&self, str: S) -> Option<&TrieNode<C>> {
+			let len = str.char_count();
+			self.node_iter(str).enumerate().last().and_then(|(i, n)| {
+				if i == len - 1 {
+					Some(n)
+				} else {
+					None
+				}
+			})
+		}
 
-        fn find(&self, cs: &[u8]) -> Option<&TrieNode<C>> {
-            if let Some(c) = cs.first() {
-                let i = *c as usize;
-                if let Some(child) = self.children[i].as_ref() {
-                    child.find(&cs[1..])
-                } else {
-                    None
-                }
-            } else {
-                Some(self)
-            }
-        }
-    }
+		pub fn node_iter<S: StringEncodable>(&self, str: S) -> TrieNodeIterator<C> {
+			let cs = str.encode::<C>();
+			TrieNodeIterator::<C> {
+				str: cs,
+				cur_pos: 0,
+				cur_node: &self.root_node,
+			}
+		}
+	}
+
+	#[derive(Clone, Debug)]
+	pub struct TrieNode<C: CharSet> {
+		pub matched_string_cnt: usize, // # of strings in the subtree of the node
+		pub terminated_str_ids: HashSet<usize>, // IDs of strings ending here
+		children: Vec<Option<Box<TrieNode<C>>>>,
+		_marker: PhantomData<C>,
+	}
+
+	impl<C: CharSet> TrieNode<C> {
+		const INIT: Option<Box<TrieNode<C>>> = None;
+		fn new() -> Self {
+			TrieNode {
+				matched_string_cnt: 0,
+				terminated_str_ids: HashSet::new(),
+				children: vec![Self::INIT; C::DAT_SIZE],
+				_marker: PhantomData,
+			}
+		}
+
+		fn insert(&mut self, id: usize, cs: &[u8]) {
+			self.matched_string_cnt += 1;
+			if let Some(c) = cs.first() {
+				let i = *c as usize;
+				if let Some(child) = self.children[i].as_mut() {
+					child.insert(id, &cs[1..]);
+				} else {
+					let mut child = Box::new(TrieNode::new());
+					child.insert(id, &cs[1..]);
+					self.children[i] = Option::Some(child);
+				}
+			} else {
+				self.terminated_str_ids.insert(id);
+			}
+		}
+
+		fn erase(&mut self, id: usize, cs: &[u8]) -> bool {
+			if let Some(c) = cs.first() {
+				let i = *c as usize;
+				if let Some(child) = self.children[i].as_mut() {
+					child.erase(id, &cs[1..])
+				} else {
+					false
+				}
+			} else {
+				self.terminated_str_ids.remove(&id)
+			}
+		}
+	}
 }
 pub use trie::{CharSet, LowerAlphabetSet, LowerAlphabetTrie, StringEncodable, Trie};
 // endregion: trie
