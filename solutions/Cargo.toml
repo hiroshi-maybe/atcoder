@@ -1498,3 +1498,23 @@ path = "match_or_not.rs"
 name = "karuta"
 path = "karuta.rs"
 
+[[bin]]
+name = "swap_odd_and_even"
+path = "swap_odd_and_even.rs"
+
+[[bin]]
+name = "call_the_id_number"
+path = "call_the_id_number.rs"
+
+[[bin]]
+name = "make_takahashi_happy"
+path = "make_takahashi_happy.rs"
+
+[[bin]]
+name = "tying_rope"
+path = "tying_rope.rs"
+
+[[bin]]
+name = "geometric_progression"
+path = "geometric_progression.rs"
+
