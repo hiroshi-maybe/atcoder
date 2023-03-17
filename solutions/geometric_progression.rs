@@ -11,10 +11,64 @@ use std::collections::*;
 /// 17:49-18:06 pause
 /// 21:30-21:45 AC
 ///
+/// 3/16/2023
+///
+/// solved by matrix pow
+///
 
-fn solve() -> i64 {
-    let (a, x, m) = readln!(i64, i64, i64);
+fn pow(a: i64, x: i64, m: i64) -> [[i64; 2]; 2] {
+    if x == 0 {
+        return [[1, 0], [0, 1]];
+    }
+    let mx = [[a, 1], [0, 1]];
 
+    let mul = |a: [[i64; 2]; 2], b: [[i64; 2]; 2]| {
+        [
+            [
+                (a[0][0] * b[0][0] % m + a[0][1] * b[1][0] % m) % m,
+                (a[0][0] * b[0][1] % m + a[0][1] * b[1][1] % m) % m,
+            ],
+            [
+                (a[1][0] * b[0][0] % m + a[1][1] * b[1][0] % m) % m,
+                (a[1][0] * b[0][1] % m + a[1][1] * b[1][1] % m) % m,
+            ],
+        ]
+    };
+
+    // let add = |a: [[i64; 2]; 2], b: [[i64; 2]; 2]| {
+    //     [
+    //         [(a[0][0] + b[0][0]) % m, (a[0][1] + b[0][1]) % m],
+    //         [(a[1][0] + b[1][0]) % m, (a[1][1] + b[1][1]) % m],
+    //     ]
+    // };
+
+    // let a = [[1, 2], [3, 4]];
+    // let b = [[5, 6], [7, 8]];
+    // let ab = mul(a, b);
+    // dbgln!(ab);
+
+    let mut res = [[1, 0], [0, 1]];
+    let mut cur = mx;
+    for i in 0..40 {
+        if (x >> i) & 1 == 1 {
+            res = mul(res, cur);
+        }
+        cur = mul(cur, cur);
+    }
+    res
+}
+
+#[allow(dead_code)]
+fn solve_mx_pow(a: i64, x: i64, m: i64) -> i64 {
+    let ax = pow(a, x - 1, m);
+
+    // dbgln!(ax);
+
+    (ax[0][0] + 1 * ax[0][1]) % m
+}
+
+#[allow(dead_code)]
+fn solve_square_division(a: i64, x: i64, m: i64) -> i64 {
     let mut pow_a = vec![1_i64];
     for i in (1_i64..).take_while(|i| i * i <= x) {
         let last = pow_a[(i - 1) as usize];
@@ -44,7 +98,8 @@ fn solve() -> i64 {
 fn main() {
     setup_out!(put, puts);
 
-    let res = solve();
+    let (a, x, m) = readln!(i64, i64, i64);
+    let res = solve_mx_pow(a, x, m);
     puts!("{}", res);
 }
 
