@@ -1,6 +1,7 @@
 #![allow(unused_macros, unused_imports)]
 use std::cmp::*;
 use std::collections::*;
+use std::sync::atomic::AtomicI64;
 
 // $ cp-batch geometric_progression | diff geometric_progression.out -
 // $ cargo run --bin geometric_progression
@@ -15,52 +16,68 @@ use std::collections::*;
 ///
 /// solved by matrix pow
 ///
+/// 3/26/2023
+///
+/// solved with the matrix library
+///
 
-fn pow(a: i64, x: i64, m: i64) -> [[i64; 2]; 2] {
+pub struct Modulo {
+    m: AtomicI64,
+}
+impl Modulo {
+    pub const fn new(m: i64) -> Self {
+        Modulo {
+            m: AtomicI64::new(m),
+        }
+    }
+    fn update(&self, m: i64) {
+        self.m.store(m, std::sync::atomic::Ordering::SeqCst);
+    }
+    fn get(&self) -> i64 {
+        self.m.load(std::sync::atomic::Ordering::SeqCst)
+    }
+}
+static MODULO: Modulo = Modulo::new(1);
+
+#[derive(Copy, Clone, Debug, PartialEq)]
+struct DynMod(i64);
+impl MatrixElement for DynMod {
+    type InternalValue = Self;
+    fn zero() -> Self::InternalValue {
+        DynMod(0)
+    }
+    fn one() -> Self::InternalValue {
+        DynMod(1)
+    }
+}
+impl std::ops::Mul for DynMod {
+    type Output = Self;
+    fn mul(self, rhs: Self) -> Self::Output {
+        DynMod(self.0 * rhs.0 % MODULO.get())
+    }
+}
+impl std::ops::AddAssign for DynMod {
+    fn add_assign(&mut self, rhs: Self) {
+        self.0 = self.0 + rhs.0 % MODULO.get();
+    }
+}
+
+fn pow(a: i64, x: i64) -> [[i64; 2]; 2] {
     if x == 0 {
         return [[1, 0], [0, 1]];
     }
-    let mx = [[a, 1], [0, 1]];
-
-    let mul = |a: [[i64; 2]; 2], b: [[i64; 2]; 2]| {
-        [
-            [
-                (a[0][0] * b[0][0] % m + a[0][1] * b[1][0] % m) % m,
-                (a[0][0] * b[0][1] % m + a[0][1] * b[1][1] % m) % m,
-            ],
-            [
-                (a[1][0] * b[0][0] % m + a[1][1] * b[1][0] % m) % m,
-                (a[1][0] * b[0][1] % m + a[1][1] * b[1][1] % m) % m,
-            ],
-        ]
-    };
-
-    // let add = |a: [[i64; 2]; 2], b: [[i64; 2]; 2]| {
-    //     [
-    //         [(a[0][0] + b[0][0]) % m, (a[0][1] + b[0][1]) % m],
-    //         [(a[1][0] + b[1][0]) % m, (a[1][1] + b[1][1]) % m],
-    //     ]
-    // };
-
-    // let a = [[1, 2], [3, 4]];
-    // let b = [[5, 6], [7, 8]];
-    // let ab = mul(a, b);
-    // dbgln!(ab);
-
-    let mut res = [[1, 0], [0, 1]];
-    let mut cur = mx;
-    for i in 0..40 {
-        if (x >> i) & 1 == 1 {
-            res = mul(res, cur);
-        }
-        cur = mul(cur, cur);
-    }
-    res
+    let mx = Matrix::<DynMod>::from(&vec![
+        vec![DynMod(a), DynMod(1)],
+        vec![DynMod(0), DynMod(1)],
+    ]);
+    let res = mx.pow(x as u64);
+    [[res[0][0].0, res[0][1].0], [res[1][0].0, res[1][1].0]]
 }
 
 #[allow(dead_code)]
 fn solve_mx_pow(a: i64, x: i64, m: i64) -> i64 {
-    let ax = pow(a, x - 1, m);
+    MODULO.update(m);
+    let ax = pow(a, x - 1);
 
     // dbgln!(ax);
 
@@ -102,6 +119,166 @@ fn main() {
     let res = solve_mx_pow(a, x, m);
     puts!("{}", res);
 }
+
+// region: matrix
+
+// #[rustfmt::skip]
+#[allow(dead_code)]
+pub mod matrix {
+    // use crate::modint::ModInt;
+    use std::ops::{Add, AddAssign, Index, Mul, MulAssign};
+
+    pub trait MatrixElement {
+        type InternalValue: Clone + Copy;
+        fn zero() -> Self::InternalValue;
+        fn one() -> Self::InternalValue;
+    }
+    impl MatrixElement for i64 {
+        type InternalValue = Self;
+        fn zero() -> Self::InternalValue {
+            0
+        }
+        fn one() -> Self::InternalValue {
+            1
+        }
+    }
+    // impl MatrixElement for ModInt {
+    //     type InternalValue = Self;
+    //     fn zero() -> Self::InternalValue {
+    //         ModInt::from(0)
+    //     }
+    //     fn one() -> Self::InternalValue {
+    //         ModInt::from(1)
+    //     }
+    // }
+
+    #[derive(Debug, Default, Hash, PartialEq, Eq)]
+    pub struct Matrix<Element: MatrixElement> {
+        n: usize,
+        m: usize,
+        dat: Vec<Vec<Element::InternalValue>>,
+    }
+    impl<Element: MatrixElement> Matrix<Element> {
+        pub fn new(n: usize, m: usize) -> Self {
+            let dat = vec![vec![Element::zero(); m]; n];
+            Matrix { n, m, dat }
+        }
+    }
+    impl<Element: MatrixElement> Matrix<Element>
+    where
+        Matrix<Element>: MulAssign<Self>,
+    {
+        /// res = A^n, O(N^3*lg n) time
+        pub fn pow(&self, mut exp: u64) -> Self {
+            assert_eq!(self.n, self.m);
+            let mut res = Matrix::<Element>::new(self.n, self.n);
+            for i in 0..self.n {
+                res.dat[i][i] = Element::one();
+            }
+            let mut a = self.clone();
+            while exp > 0 {
+                if exp & 1 == 1 {
+                    res *= a.clone();
+                }
+                a *= a.clone();
+                exp >>= 1;
+            }
+            res
+        }
+    }
+    impl<Element: MatrixElement> Clone for Matrix<Element> {
+        fn clone(&self) -> Self {
+            Self {
+                n: self.n.clone(),
+                m: self.m.clone(),
+                dat: self.dat.clone(),
+            }
+        }
+    }
+    impl<Element: MatrixElement> Index<usize> for Matrix<Element> {
+        type Output = Vec<Element::InternalValue>;
+
+        fn index(&self, index: usize) -> &Self::Output {
+            &self.dat[index]
+        }
+    }
+    impl<Element: MatrixElement> From<&Vec<Vec<Element::InternalValue>>> for Matrix<Element> {
+        fn from(v: &Vec<Vec<Element::InternalValue>>) -> Self {
+            let (n, m) = (v.len(), v[0].len());
+            let mut matrix = Matrix::new(n, m);
+            for i in 0..n {
+                matrix.dat[i] = v[i].clone();
+            }
+            matrix
+        }
+    }
+    impl<Element, Rhs> AddAssign<Rhs> for Matrix<Element>
+    where
+        Element: MatrixElement,
+        Rhs: Into<Matrix<Element>>,
+        Element::InternalValue: Add<Output = Element::InternalValue>,
+    {
+        fn add_assign(&mut self, rhs: Rhs) {
+            let rhs = rhs.into();
+            assert_eq!(self.n, rhs.n);
+            assert_eq!(self.m, rhs.m);
+            for i in 0..self.n {
+                for j in 0..self.m {
+                    self.dat[i][j] = self[i][j] + rhs[i][j];
+                }
+            }
+        }
+    }
+    impl<Element, Rhs> MulAssign<Rhs> for Matrix<Element>
+    where
+        Element: MatrixElement,
+        Rhs: Into<Matrix<Element>>,
+        Element::InternalValue: Mul<Output = Element::InternalValue> + AddAssign,
+    {
+        fn mul_assign(&mut self, rhs: Rhs) {
+            let rhs = rhs.into();
+            assert_eq!(self.m, rhs.n);
+            let mut new_mx = Matrix::<Element>::new(self.n, rhs.m);
+            for i in 0..self.n {
+                for j in 0..rhs.m {
+                    for k in 0..self.m {
+                        new_mx.dat[i][j] += self[i][k] * rhs[k][j];
+                    }
+                }
+            }
+            *self = new_mx;
+        }
+    }
+    impl<Element, Rhs> Add<Rhs> for Matrix<Element>
+    where
+        Element: MatrixElement,
+        Rhs: Into<Matrix<Element>>,
+        Element::InternalValue: Add<Output = Element::InternalValue>,
+    {
+        type Output = Self;
+        fn add(self, rhs: Rhs) -> Self {
+            let mut res = self.clone();
+            res += rhs;
+            res
+        }
+    }
+    impl<Element, Rhs> Mul<Rhs> for Matrix<Element>
+    where
+        Element: MatrixElement,
+        Rhs: Into<Matrix<Element>>,
+        Element::InternalValue: Mul<Output = Element::InternalValue> + AddAssign,
+    {
+        type Output = Self;
+        fn mul(self, rhs: Rhs) -> Self::Output {
+            let mut res = self.clone();
+            res *= rhs;
+            res
+        }
+    }
+}
+pub use matrix::{Matrix, MatrixElement};
+
+// endregion: matrix
 
 use crate::cplib::io::*;
 use crate::cplib::minmax::*;
